@@ -11,7 +11,7 @@
 // Update these URLs for your hackathon submission & GitHub repo!
 // ===================================================================
 const GITHUB_REPO_URL = "https://github.com/Naufal2511/aggieRideMakeathon";
-const SUBMISSION_VIDEO_URL = "https://www.youtube.com/watch?v=placeholder-aggieride-demo";
+const SUBMISSION_VIDEO_URL = "https://youtu.be/nnAs4oOZSmg";
 
 // Attach URLs to showcase panels on DOM ready
 document.addEventListener("DOMContentLoaded", () => {

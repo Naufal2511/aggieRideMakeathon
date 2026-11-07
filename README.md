@@ -4,17 +4,19 @@
 > *Built for Texas A&M Makeathon 2026 • College Station, Texas*
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-aggies--ride.netlify.app-500000?style=for-the-badge&logo=netlify)](https://aggies-ride.netlify.app/#explore-app)
+[![Demo Video](https://img.shields.io/badge/Demo_Video-YouTube-FF0000?style=for-the-badge&logo=youtube)](https://youtu.be/nnAs4oOZSmg)
 [![TAMU Makeathon](https://img.shields.io/badge/TAMU_Makeathon-2026_Project-D4AF37?style=for-the-badge&logo=target)](https://aggies-ride.netlify.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-black?style=for-the-badge)](LICENSE)
 
 ---
 
-## 🌐 Live Deployment Links
+## 🌐 Live Deployment & Presentation Links
 
 | Experience | URL | Description |
 | :--- | :--- | :--- |
 | **🚀 Main Landing Page & Interactive Showcase** | **[https://aggies-ride.netlify.app/#explore-app](https://aggies-ride.netlify.app/#explore-app)** | Editorial landing page with interactive Texas corridor map, intent playground, and embedded smartphone app. |
 | **📱 Full Judge & Evaluator App View** | **[https://aggies-ride.netlify.app/app](https://aggies-ride.netlify.app/app)** | 2-column showcase with top evaluator toolbar, 5 student personas, and 7 guided evaluation flows. |
+| **🎬 Presentation & Walkthrough Video** | **[https://youtu.be/nnAs4oOZSmg](https://youtu.be/nnAs4oOZSmg)** | Full product walkthrough, design philosophy, and demo video for judges. |
 
 ---
 
