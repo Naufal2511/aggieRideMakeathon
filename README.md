@@ -135,8 +135,8 @@ Because the web app uses self-contained LocalStorage fallback, you can run it wi
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/makeathon.git
-cd makeathon
+git clone https://github.com/Naufal2511/aggieRideMakeathon.git
+cd aggieRideMakeathon
 
 # Start local server (Python 3)
 python3 -m http.server 8000

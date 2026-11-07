@@ -10,7 +10,7 @@
 // 1. SUBMISSION & REPOSITORY PLACEHOLDER CONSTANTS
 // Update these URLs for your hackathon submission & GitHub repo!
 // ===================================================================
-const GITHUB_REPO_URL = "https://github.com/moaaz-s/makeathon-aggie-ride";
+const GITHUB_REPO_URL = "https://github.com/Naufal2511/aggieRideMakeathon";
 const SUBMISSION_VIDEO_URL = "https://www.youtube.com/watch?v=placeholder-aggieride-demo";
 
 // Attach URLs to showcase panels on DOM ready
