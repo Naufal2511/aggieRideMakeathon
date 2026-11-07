@@ -41,7 +41,20 @@ Instead of hunting for drivers, students simply communicate what they intend to 
 
 ---
 
-## ✨ 2. Key Product Features
+## 📊 2. Field Research & Empirical Validation (23-Student Campus Survey)
+
+Before finalizing our architecture, we surveyed Texas A&M drivers and passengers across Bryan–College Station. The data provided direct empirical proof for Aggie Ride's features:
+
+* **82% of carless Aggies** skipped, delayed, or cut short grocery runs and essential trips due to lack of a ride or excessive Uber costs.
+* **75% of student drivers** report traveling to grocery stores, campus, or home with **3 or more completely empty seats**.
+* **91% of respondents** are eager to carpool with a fellow Aggie heading in the same direction.
+* **100% of drivers** required that rides only occur *"on trips I'm already making"* — **validating our Ride Intent core concept**.
+* **Choosing pickup spots (5–10 mins max)** was non-negotiable for drivers — **validating our 7 Predefined Campus Meeting Hubs**.
+* **$1–$3** was identified as the fair student gas contribution, contrasting with $20+ commercial rideshare surge pricing.
+
+---
+
+## ✨ 3. Key Product Features
 
 ### A. Demand-First Intention Engine
 * **"Where are you heading?"**: Predefined destination shortcuts for Walmart, H-E-B, Target, Campus, and Texas metro corridors.
