@@ -181,5 +181,5 @@ vercel --prod
 
 ---
 
-*“Because nobody should have to make the Texas drive alone.”*  
+*“No Aggie should ride alone.”*  
 **Built with pride by Aggies for Aggies.**
