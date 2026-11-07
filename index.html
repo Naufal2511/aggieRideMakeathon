@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aggie Ride — Good Journeys Are Better Shared | Texas A&M Student Mobility</title>
+  
+  <!-- SEO & Social Meta -->
+  <meta name="description" content="Aggie Ride is a student-powered mobility platform built around ride intent. Connect with fellow Texas A&M students heading to Houston, Dallas, Austin, or local grocery runs.">
+  <meta property="og:title" content="Aggie Ride — Good Journeys Are Better Shared">
+  <meta property="og:description" content="A demand-first student mobility network connecting Aggies heading in the same direction. Built for Texas A&M Makeathon.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://aggies-ride.netlify.app">
+  <meta name="theme-color" content="#500000">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23500000'/><text y='65' font-size='45' font-family='sans-serif' font-weight='900' fill='white' text-anchor='middle' x='50'>ATM</text></svg>">
+
+  <!-- Google Fonts: Fraunces (Editorial Display) & Outfit / Plus Jakarta Sans (Clean Modern Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/landing.css?v=2.0">
+</head>
+<body>
+
+  <!-- ===================================================================
+       STICKY NAVIGATION BAR
+       =================================================================== -->
+  <div class="navbar-wrapper" id="navbarWrapper">
+    <nav class="navbar" aria-label="Main Navigation">
+      <a href="#" class="brand" aria-label="Aggie Ride Home">
+        <div class="brand-crest">ATM</div>
+        <div class="brand-text">
+          <span class="brand-name">Aggie Ride</span>
+          <span class="brand-tag">Student Mobility</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#the-problem" class="nav-link">The Problem</a></li>
+        <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+        <li><a href="#ride-intent" class="nav-link">Ride Intent</a></li>
+        <li><a href="#explore-app" class="nav-link">Explore App</a></li>
+        <li><a href="#texas-routes" class="nav-link">Texas Routes</a></li>
+        <li><a href="#community" class="nav-link">Aggieland</a></li>
+        <li><a href="#showcase" class="nav-link">Showcase</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="#" id="navGithubLink" target="_blank" rel="noopener noreferrer" class="nav-btn-text">
+          GitHub ↗
+        </a>
+        <a href="#explore-app" class="btn-primary">
+          <span>Test The App</span>
+          <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ===================================================================
+       SECTION 1: THE OPENING HERO
+       =================================================================== -->
+  <header class="hero-section" id="hero">
+    <div class="container">
+      <div class="hero-grid">
+        
+        <!-- Left: Editorial Content -->
+        <div class="hero-content">
+          <div class="hero-pill-badge">
+            <span class="hero-pill-dot"></span>
+            <span class="hero-pill-text">Texas A&M Makeathon 2026 • Live Project</span>
+          </div>
+
+          <h1 class="hero-headline">
+            Good journeys are <span class="italic">better shared.</span>
+          </h1>
+
+          <p class="hero-subtext">
+            You’re going somewhere. Chances are, another Aggie is too. Aggie Ride connects Aggies heading in the same direction. Find a ride, offer a seat, and make getting there a little easier.
+          </p>
+
+          <div class="hero-ctas">
+            <a href="#explore-app" class="btn-primary">
+              <span class="material-symbols-outlined" style="font-size:18px;">smartphone</span>
+              <span>Explore Aggie Ride</span>
+            </a>
+            <a href="#how-it-works" class="btn-outline">
+              <span>See how it works</span>
+              <span class="material-symbols-outlined" style="font-size:18px;">arrow_downward</span>
+            </a>
+          </div>
+
+          <div class="hero-social-proof">
+            <div class="avatar-stack">
+              <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&auto=format&fit=crop&q=80" alt="Carlos">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="Maya">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="David">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Priya">
+            </div>
+            <div class="avatar-stack-text">
+              <strong>Built by Aggies for Aggies</strong> — 100% verified with @tamu.edu authentication.
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Animated Route Canvas & Floating Journey Tags -->
+        <div class="hero-visual">
+          <div class="map-card-graphic">
+            
+            <!-- Floating Live Travel Intent 1 -->
+            <div class="floating-journey-tag floating-tag-1">
+              <div class="tag-icon-circle maroon">
+                <span class="material-symbols-outlined">directions_car</span>
+              </div>
+              <div class="tag-text-block">
+                <span class="tag-title">College Station ➔ Houston</span>
+                <span class="tag-sub">3 Aggies heading out • Friday 4 PM</span>
+              </div>
+            </div>
+
+            <!-- Floating Live Travel Intent 2 -->
+            <div class="floating-journey-tag floating-tag-2">
+              <div class="tag-icon-circle gold">
+                <span class="material-symbols-outlined">shopping_basket</span>
+              </div>
+              <div class="tag-text-block">
+                <span class="tag-title">Walmart Supercenter</span>
+                <span class="tag-sub">Park West Hub • Leaving in 25m</span>
+              </div>
+            </div>
+
+            <!-- Floating Live Travel Intent 3 -->
+            <div class="floating-journey-tag floating-tag-3">
+              <div class="tag-icon-circle green">
+                <span class="material-symbols-outlined">event</span>
+              </div>
+              <div class="tag-text-block">
+                <span class="tag-title">TAMU Makeathon @ Zachry</span>
+                <span class="tag-sub">14 Students carpooling</span>
+              </div>
+            </div>
+
+            <!-- Stylized Texas Route Network SVG -->
+            <svg class="map-svg-canvas" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Subtle Texas Outline Silhouette -->
+              <path d="M 120 70 L 320 70 L 320 180 L 440 220 L 430 380 L 360 460 L 260 480 L 210 390 L 140 330 L 100 240 L 60 210 L 60 120 Z" 
+                    fill="#F9F6EE" stroke="#E6E0D2" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.8"/>
+
+              <!-- Major Highways radiating from College Station (Center: 290, 270) -->
+              <!-- Route to Dallas (North) -->
+              <path d="M 290 270 Q 295 190 300 130" stroke="#500000" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 6"/>
+              <!-- Route to Houston (Southeast) -->
+              <path d="M 290 270 Q 340 310 375 350" stroke="#500000" stroke-width="3.5" stroke-linecap="round"/>
+              <!-- Route to Austin (West) -->
+              <path d="M 290 270 Q 240 280 200 295" stroke="#500000" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 6"/>
+              <!-- Route to San Antonio (Southwest) -->
+              <path d="M 290 270 Q 230 330 190 370" stroke="#500000" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="4 4"/>
+
+              <!-- Pulse Waves from College Station Hub -->
+              <circle cx="290" cy="270" r="38" fill="none" stroke="#500000" stroke-width="1.2" opacity="0.25">
+                <animate attributeName="r" values="18;65" dur="3s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.4;0" dur="3s" repeatCount="indefinite"/>
+              </circle>
+
+              <!-- Hub City Nodes -->
+              <!-- Dallas -->
+              <circle cx="300" cy="130" r="7" fill="#191919"/>
+              <text x="315" y="135" font-family="sans-serif" font-size="11" font-weight="700" fill="#374151">Dallas / DFW</text>
+
+              <!-- Houston -->
+              <circle cx="375" cy="350" r="8" fill="#191919"/>
+              <text x="390" y="355" font-family="sans-serif" font-size="11" font-weight="700" fill="#374151">Houston (IAH)</text>
+
+              <!-- Austin -->
+              <circle cx="200" cy="295" r="7" fill="#191919"/>
+              <text x="145" y="300" font-family="sans-serif" font-size="11" font-weight="700" fill="#374151">Austin</text>
+
+              <!-- San Antonio -->
+              <circle cx="190" cy="370" r="7" fill="#191919"/>
+              <text x="105" y="375" font-family="sans-serif" font-size="11" font-weight="700" fill="#374151">San Antonio</text>
+
+              <!-- COLLEGE STATION (Aggieland Center) -->
+              <circle cx="290" cy="270" r="14" fill="#500000"/>
+              <circle cx="290" cy="270" r="6" fill="#D4AF37"/>
+              <text x="310" y="275" font-family="sans-serif" font-size="13" font-weight="800" fill="#500000">College Station (TAMU)</text>
+
+              <!-- Moving Indicator along Houston Highway -->
+              <circle cx="332" cy="310" r="5" fill="#D4AF37">
+                <animateMotion path="M 290 270 Q 340 310 375 350" dur="4s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator-wrap">
+      <div class="scroll-mouse">
+        <div class="scroll-wheel"></div>
+      </div>
+      <span>Scroll to explore</span>
+    </div>
+  </header>
+
+  <!-- ===================================================================
+       SECTION 2: THE PROBLEM (EVERYONE IS GOING SOMEWHERE)
+       =================================================================== -->
+  <section class="problem-section reveal-on-scroll" id="the-problem">
+    <div class="container">
+      
+      <div class="problem-header">
+        <span class="section-label">The Dilemma</span>
+        <h2 class="section-headline">Same destination. Different group chats.</h2>
+        <p class="section-subtext">
+          College Station is packed with students heading to the exact same places every weekend — home to Houston or Dallas, airport runs, or simple grocery trips on Texas Ave. Yet discovering each other is chaos.
+        </p>
+      </div>
+
+      <div class="chat-chaos-grid">
+        
+        <!-- Left: Fragmented Group Chat Snippets -->
+        <div class="chat-cards-cluster">
+          
+          <div class="chat-bubble-card left">
+            <div class="chat-header-info">
+              <span class="chat-sender">GroupMe • TAMU Rideshare '26</span>
+              <span class="chat-time">Friday 1:14 PM</span>
+            </div>
+            <p class="chat-text">"Anyone driving to <strong>Houston</strong> this Friday around 4? Will split gas!"</p>
+            <span class="chat-app-tag">Lost under 84 other unread messages</span>
+          </div>
+
+          <div class="chat-bubble-card right">
+            <div class="chat-header-info">
+              <span class="chat-sender">Snapchat Story • Maya</span>
+              <span class="chat-time">Friday 2:05 PM</span>
+            </div>
+            <p class="chat-text">"Leaving CS at 5 PM for Katy/Houston. <strong>Have 3 empty seats</strong> in my Civic."</p>
+            <span class="chat-app-tag">Expires in 18 hours</span>
+          </div>
+
+          <div class="chat-bubble-card left">
+            <div class="chat-header-info">
+              <span class="chat-sender">Discord • Zachry Engineering</span>
+              <span class="chat-time">Saturday 10:20 AM</span>
+            </div>
+            <p class="chat-text">"Can someone swing by Park West for <strong>Walmart</strong>? Uber is charging $22 for 2 miles 💀"</p>
+            <span class="chat-app-tag">Zero replies</span>
+          </div>
+
+          <div class="chat-bubble-card highlight right">
+            <div class="chat-header-info">
+              <span class="chat-sender" style="color:#B91C1C;">The Inevitable Hallway Moment</span>
+              <span class="chat-time">Sunday Night</span>
+            </div>
+            <p class="chat-text">
+              <strong>"Wait, YOU WERE GOING TO HOUSTON TOO?! Why didn’t you tell me?!"</strong>
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Right: Editorial Narrative -->
+        <div class="problem-narrative-panel">
+          <div class="problem-stat-box">
+            <h3>Thousands of empty seats.</h3>
+            <p>
+              On any given Friday, hundreds of students drive alone on Highway 6, Highway 21, and I-45, while hundreds of other students are frantically checking four different apps hoping someone is heading their way.
+            </p>
+          </div>
+
+          <div class="problem-stat-box">
+            <h3>Surge pricing hurts students.</h3>
+            <p>
+              Commercial rideshare apps charge $20 to $30 just to go from campus to the grocery store. For cross-city trips to DFW or Houston, commercial buses have inflexible schedules and inconvenient stations.
+            </p>
+          </div>
+
+          <p class="punchline-quote">
+            "What if finding your way there was as easy as finding your people?"
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       SECTION 3: INTRODUCING AGGIE RIDE
+       =================================================================== -->
+  <section class="intro-section reveal-on-scroll" id="how-it-works">
+    <div class="container">
+      
+      <div class="intro-header">
+        <span class="section-label">The Solution</span>
+        <h2 class="section-headline">Meet Aggie Ride.</h2>
+        <p class="section-subtext">
+          A student-powered way to turn individual travel plans into shared journeys. It’s not about hailing a driver on demand — it’s about discovering who is already heading in your direction.
+        </p>
+      </div>
+
+      <div class="concept-steps-staggered">
+        
+        <!-- Step 1 -->
+        <div class="concept-card">
+          <div class="concept-number">01</div>
+          <div class="concept-icon-wrap">
+            <span class="material-symbols-outlined">explore</span>
+          </div>
+          <h3 class="concept-title">Share your intent</h3>
+          <p class="concept-desc">
+            Tell the community where you need to go, your flexible time window, and your starting hub. Or post that you’re driving and have open seats.
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="concept-card">
+          <div class="concept-number">02</div>
+          <div class="concept-icon-wrap">
+            <span class="material-symbols-outlined">hub</span>
+          </div>
+          <h3 class="concept-title">Discover your match</h3>
+          <p class="concept-desc">
+            Aggie Ride groups students with compatible travel intentions into live Destination Clusters — distinguishing between active riders and registered drivers.
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="concept-card">
+          <div class="concept-number">03</div>
+          <div class="concept-icon-wrap">
+            <span class="material-symbols-outlined">handshake</span>
+          </div>
+          <h3 class="concept-title">Connect & coordinate</h3>
+          <p class="concept-desc">
+            Coordinate pickup at 7 predefined campus hubs (Park West, MSC, Century Square), message privately, and board safely with secure OTP passcodes.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       SECTION 4: RIDE INTENT, NOT RIDE BOOKING
+       =================================================================== -->
+  <section class="intent-section reveal-on-scroll" id="ride-intent">
+    <div class="container">
+      
+      <div class="intent-header">
+        <span class="section-label">Core Philosophy</span>
+        <h2 class="section-headline">Not another booking app.<br>A better way to find your way.</h2>
+        <p class="section-subtext">
+          Aggie Ride centers on <strong>travel intent</strong>. Click through the intentions below to see how our platform adapts dynamically to both riders and drivers.
+        </p>
+      </div>
+
+      <!-- Intent Switcher Chips -->
+      <div class="intent-chips-bar" role="tablist">
+        <button class="intent-chip-btn active" data-intent="need_ride" role="tab">
+          <span class="material-symbols-outlined" style="font-size:18px;">hail</span>
+          <span>Looking for a ride</span>
+        </button>
+        <button class="intent-chip-btn" data-intent="have_seats" role="tab">
+          <span class="material-symbols-outlined" style="font-size:18px;">directions_car</span>
+          <span>Offering a ride</span>
+        </button>
+        <button class="intent-chip-btn" data-intent="interested" role="tab">
+          <span class="material-symbols-outlined" style="font-size:18px;">thumb_up</span>
+          <span>Interested in a trip</span>
+        </button>
+        <button class="intent-chip-btn" data-intent="destinations" role="tab">
+          <span class="material-symbols-outlined" style="font-size:18px;">groups</span>
+          <span>Exploring shared destinations</span>
+        </button>
+      </div>
+
+      <!-- Interactive Intent Showcase Box -->
+      <div class="intent-interactive-stage">
+        
+        <!-- Left: Explanatory Copy & Bullets -->
+        <div class="intent-stage-info">
+          <h3 id="intentStageTitle">Looking for a ride</h3>
+          <p id="intentStageSub">
+            Share where you need to go and your preferred time window. Fellow Aggies heading that way can offer seats without costly commercial fares.
+          </p>
+          <ul class="intent-bullet-list" id="intentStageBullets">
+            <li>
+              <span class="bullet-icon">✓</span>
+              <span>Select flexible departure windows (e.g. ±30 mins or anytime)</span>
+            </li>
+            <li>
+              <span class="bullet-icon">✓</span>
+              <span>Choose from 7 shared campus meeting hubs (Park West, MSC, etc.)</span>
+            </li>
+            <li>
+              <span class="bullet-icon">✓</span>
+              <span>Get automatically added to an active destination cluster</span>
+            </li>
+            <li>
+              <span class="bullet-icon">✓</span>
+              <span>Ride with verified students with @tamu.edu authentication</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Right: Realistic Intent Card Preview -->
+        <div class="intent-card-preview">
+          <span class="preview-badge-status" id="previewBadge" style="background:#F5F3FF; border:1px solid #DDD6FE; color:#6D28D9;">
+            Passenger Intent Active
+          </span>
+
+          <div class="preview-destination-row">
+            <div>
+              <h4 class="preview-destination-title" id="previewDestTitle">Walmart Supercenter & Groceries</h4>
+              <span class="preview-destination-sub" id="previewDestSub">Saturday • Departing between 11:00 AM – 11:30 AM</span>
+            </div>
+          </div>
+
+          <div class="preview-details-grid">
+            <div>
+              <span class="detail-item-title" id="previewHubTitle">Pickup Hub</span>
+              <p class="detail-item-val" id="previewHubVal">Park West (Tower 1)</p>
+            </div>
+            <div>
+              <span class="detail-item-title" id="previewStatusTitle">Community Demand</span>
+              <p class="detail-item-val" id="previewStatusVal">4 Aggies also interested</p>
+            </div>
+          </div>
+
+          <div class="preview-avatar-row">
+            <div class="preview-user-meta">
+              <img id="previewUserAvatar" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=120&auto=format&fit=crop&q=80" alt="User">
+              <div>
+                <strong style="color:#fff; font-size:13.5px; display:block;" id="previewUserName">Carlos Hernandez '26</strong>
+                <span style="color:#9CA3AF; font-size:11.5px;" id="previewUserRole">Sophomore • Passenger</span>
+              </div>
+            </div>
+            <button class="preview-action-btn" id="previewActionBtn">Join Intent Group</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       SECTION 5: THE SIGNATURE EXPERIENCE: EXPLORE THE APP
+       =================================================================== -->
+  <section class="explore-app-section reveal-on-scroll" id="explore-app">
+    <div class="container-wide">
+      
+      <div class="explore-header">
+        <span class="section-label">Signature Experience</span>
+        <h2 class="section-headline">Enough talking about it. Take it for a spin.</h2>
+        <p class="section-subtext">
+          Explore the live, fully-functional Aggie Ride application right below inside the iPhone. Tap through tabs, express travel intent, or test different student personas.
+        </p>
+      </div>
+
+      <!-- Quick Persona Switcher & Direct Launch Toolbar -->
+      <div class="phone-interaction-controls">
+        <div class="control-label-group">
+          <span class="material-symbols-outlined" style="font-size:18px;">switch_account</span>
+          <span>Switch Persona:</span>
+        </div>
+
+        <div class="persona-quick-chips">
+          <button class="persona-btn-chip active" data-user="user-carlos" title="Switch to Carlos (Passenger)">Carlos (Rider)</button>
+          <button class="persona-btn-chip" data-user="user-maya" title="Switch to Maya (Driver with Civic)">Maya (Driver)</button>
+          <button class="persona-btn-chip" data-user="user-david" title="Switch to David (Grad Driver)">David (Grad)</button>
+          <button class="persona-btn-chip" data-user="user-priya" title="Switch to Priya (Junior Driver)">Priya (Junior)</button>
+        </div>
+
+        <a href="/app" target="_blank" rel="noopener" class="full-app-external-btn">
+          <span>Open Full-Screen App</span>
+          <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span>
+        </a>
+      </div>
+
+      <!-- Smartphone Showcase Stage with Floating Annotations -->
+      <div class="phone-showcase-stage">
+        
+        <!-- Annotation 1: Top Left -->
+        <div class="phone-annotation anno-top-left">
+          <h4><span class="material-symbols-outlined" style="font-size:17px;">near_me</span> Express Travel Intent</h4>
+          <p>Post where and when you’re heading. Predefined shortcuts for Walmart, H-E-B, Target, and Campus.</p>
+        </div>
+
+        <!-- Annotation 2: Bottom Left -->
+        <div class="phone-annotation anno-bottom-left">
+          <h4><span class="material-symbols-outlined" style="font-size:17px;">pin_drop</span> 7 Shared Meeting Hubs</h4>
+          <p>No tedious door-to-door stops. Meet at Park West, MSC Rudder Plaza, Century Square, and White Creek.</p>
+        </div>
+
+        <!-- The Realistic Modern Smartphone Chassis -->
+        <div class="smartphone-frame" id="smartphoneFrame">
+          
+          <!-- Dynamic Island -->
+          <div class="smartphone-island">
+            <div class="island-camera"></div>
+            <div class="island-sensor"></div>
+          </div>
+
+          <!-- Glass Refraction Gloss -->
+          <div class="smartphone-glare"></div>
+
+          <!-- Embedded Real Interactive App Iframe -->
+          <iframe 
+            src="app.html?embed=true" 
+            class="smartphone-iframe" 
+            id="phoneAppIframe" 
+            title="Aggie Ride Interactive Mobile Application"
+            loading="lazy">
+          </iframe>
+
+        </div>
+
+        <!-- Annotation 3: Top Right -->
+        <div class="phone-annotation anno-top-right">
+          <h4><span class="material-symbols-outlined" style="font-size:17px;">verified_user</span> 100% Student Verified</h4>
+          <p>Tamper-proof single-use OTP boarding pass ensures riders board the right car safely.</p>
+        </div>
+
+        <!-- Annotation 4: Bottom Right -->
+        <div class="phone-annotation anno-bottom-right">
+          <h4><span class="material-symbols-outlined" style="font-size:17px;">chat</span> Private Coordination</h4>
+          <p>WhatsApp-style chat with trip context pills — without exposing personal phone numbers.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       SECTION 6: AGGIELAND IS BETTER CONNECTED
+       =================================================================== -->
+  <section class="texas-routes-section reveal-on-scroll" id="texas-routes">
+    <div class="container">
+      
+      <div class="texas-routes-header">
+        <span class="section-label">Texas Network</span>
+        <h2 class="section-headline">From Aggieland to everywhere.</h2>
+        <p class="section-subtext">
+          College Station sits at the center of the Texas Triangle. See the most popular routes Aggies travel together and explore active travel intentions.
+        </p>
+      </div>
+
+      <div class="routes-interactive-container">
+        
+        <!-- Left: Interactive Texas Map SVG -->
+        <div class="texas-map-wrapper">
+          <svg class="map-svg-canvas" viewBox="0 0 540 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Texas State Silhouette -->
+            <path d="M 120 70 L 320 70 L 320 180 L 440 220 L 430 380 L 360 460 L 260 480 L 210 390 L 140 330 L 100 240 L 60 210 L 60 120 Z" 
+                  fill="#F5EFE6" stroke="#D8CEBD" stroke-width="2"/>
+
+            <!-- Route Lines from College Station (Center: 300, 270) -->
+            <!-- Houston Route -->
+            <path id="routePathHouston" class="map-route-line" d="M 300 270 Q 355 315 390 355" stroke="#500000" stroke-width="5" stroke-linecap="round"/>
+            
+            <!-- Dallas Route -->
+            <path id="routePathDallas" class="map-route-line" d="M 300 270 Q 305 190 310 130" stroke="#500000" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="6 6" stroke-opacity="0.3"/>
+
+            <!-- Austin Route -->
+            <path id="routePathAustin" class="map-route-line" d="M 300 270 Q 250 280 210 295" stroke="#500000" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="6 6" stroke-opacity="0.3"/>
+
+            <!-- San Antonio Route -->
+            <path id="routePathSanAntonio" class="map-route-line" d="M 300 270 Q 240 330 200 375" stroke="#500000" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="6 6" stroke-opacity="0.3"/>
+
+            <!-- Hub City Points -->
+            <circle cx="310" cy="130" r="7" fill="#191919"/>
+            <text x="325" y="135" font-family="sans-serif" font-size="12" font-weight="700" fill="#191919">Dallas (DFW)</text>
+
+            <circle cx="390" cy="355" r="8" fill="#191919"/>
+            <text x="405" y="360" font-family="sans-serif" font-size="12" font-weight="700" fill="#191919">Houston (IAH)</text>
+
+            <circle cx="210" cy="295" r="7" fill="#191919"/>
+            <text x="155" y="300" font-family="sans-serif" font-size="12" font-weight="700" fill="#191919">Austin</text>
+
+            <circle cx="200" cy="375" r="7" fill="#191919"/>
+            <text x="110" y="380" font-family="sans-serif" font-size="12" font-weight="700" fill="#191919">San Antonio</text>
+
+            <!-- College Station (Hub) -->
+            <circle cx="300" cy="270" r="16" fill="#500000"/>
+            <circle cx="300" cy="270" r="6" fill="#D4AF37"/>
+            <text x="325" y="275" font-family="sans-serif" font-size="14" font-weight="800" fill="#500000">College Station</text>
+          </svg>
+        </div>
+
+        <!-- Right: Interactive Route Selector & Intent Feed -->
+        <div class="routes-sidebar-panel">
+          <h3>Select a Texas Corridor</h3>
+
+          <div class="route-selector-list">
+            
+            <div class="route-option-card active" data-city="houston">
+              <div class="route-city-info">
+                <span class="route-dot-indicator"></span>
+                <div>
+                  <h4 class="route-title">College Station ➔ Houston</h4>
+                  <span class="route-sub">I-45 Corridor • 95 miles</span>
+                </div>
+              </div>
+              <span class="route-intent-badge">3 Riders Active</span>
+            </div>
+
+            <div class="route-option-card" data-city="dallas">
+              <div class="route-city-info">
+                <span class="route-dot-indicator"></span>
+                <div>
+                  <h4 class="route-title">College Station ➔ Dallas / DFW</h4>
+                  <span class="route-sub">I-45 / US-75 • 180 miles</span>
+                </div>
+              </div>
+              <span class="route-intent-badge">4 Riders Active</span>
+            </div>
+
+            <div class="route-option-card" data-city="austin">
+              <div class="route-city-info">
+                <span class="route-dot-indicator"></span>
+                <div>
+                  <h4 class="route-title">College Station ➔ Austin</h4>
+                  <span class="route-sub">Highway 21 • 105 miles</span>
+                </div>
+              </div>
+              <span class="route-intent-badge">Gathering Interest</span>
+            </div>
+
+            <div class="route-option-card" data-city="san_antonio">
+              <div class="route-city-info">
+                <span class="route-dot-indicator"></span>
+                <div>
+                  <h4 class="route-title">College Station ➔ San Antonio</h4>
+                  <span class="route-sub">I-10 / I-35 • 165 miles</span>
+                </div>
+              </div>
+              <span class="route-intent-badge">2 Riders Active</span>
+            </div>
+
+          </div>
+
+          <!-- Dynamic Active Route Intent Feed -->
+          <div class="route-live-intent-feed">
+            <strong id="routeLiveTitle">College Station ➔ Houston (95 miles • ~1 hr 45 min)</strong>
+            <p id="routeLiveText">
+              3 Aggies heading to Houston this Friday afternoon. 1 driver offering seats to George Bush Intercontinental (IAH).
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       SECTION 7: BUILT AROUND THE AGGIE COMMUNITY
+       =================================================================== -->
+  <section class="community-section reveal-on-scroll" id="community">
+    <div class="container">
+      
+      <div class="community-header">
+        <span class="section-label">Aggie Heritage</span>
+        <h2 class="section-headline">By Aggies. For Aggies.</h2>
+        <p class="section-subtext">
+          College Station is home to over 70,000 students with different destinations, schedules, and plans. Sometimes, all it takes is finding someone going your way.
+        </p>
+      </div>
+
+      <div class="culture-features-grid">
+        
+        <div class="culture-card">
+          <div class="culture-icon-badge">
+            <span class="material-symbols-outlined">favorite</span>
+          </div>
+          <h3 class="culture-title">The 12th Man Spirit</h3>
+          <p class="culture-text">
+            Just like standing ready on the sidelines at Kyle Field, Aggies show up for one another. When an Aggie needs a ride or a driver has extra seats, our community steps in.
+          </p>
+        </div>
+
+        <div class="culture-card">
+          <div class="culture-icon-badge">
+            <span class="material-symbols-outlined">park</span>
+          </div>
+          <h3 class="culture-title">Century Tree Connections</h3>
+          <p class="culture-text">
+            Some of the best friendships and memories begin on spontaneous carpool drives. From late-night Whataburger runs to weekend trips across the state.
+          </p>
+        </div>
+
+        <div class="culture-card">
+          <div class="culture-icon-badge">
+            <span class="material-symbols-outlined">shield</span>
+          </div>
+          <h3 class="culture-title">Aggie Honor & Safety</h3>
+          <p class="culture-text">
+            “An Aggie does not lie, cheat or steal, nor tolerate those who do.” Every passenger and driver is verified with their official Texas A&M NetID credentials.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Manifesto Banner -->
+      <div class="aggie-manifesto-banner">
+        <p class="manifesto-quote">
+          “Because nobody should have to make the Texas drive alone.”
+        </p>
+        <span class="manifesto-author">— The Aggie Ride Team • College Station, Texas</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       SECTION 8: FINAL CALL TO ACTION
+       =================================================================== -->
+  <section class="final-cta-section reveal-on-scroll">
+    <div class="container">
+      <div class="final-cta-content">
+        <h2 class="final-cta-headline">Where are you headed, Aggie?</h2>
+        <p class="final-cta-subtext">
+          Your next journey might already have a few fellow Aggies on board. Hop in, find a ride, or offer your spare seats.
+        </p>
+        <div class="final-cta-actions">
+          <a href="#explore-app" class="btn-primary">
+            <span class="material-symbols-outlined" style="font-size:18px;">rocket_launch</span>
+            <span>Explore Aggie Ride</span>
+          </a>
+          <a href="#" id="finalDemoBtn" target="_blank" rel="noopener noreferrer" class="btn-outline">
+            <span class="material-symbols-outlined" style="font-size:18px;">smart_display</span>
+            <span>Watch our demo ↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       SECTION 9: PROJECT SHOWCASE & SUBMISSION PANELS
+       =================================================================== -->
+  <section class="showcase-submission-section reveal-on-scroll" id="showcase">
+    <div class="container">
+      
+      <div class="showcase-header">
+        <span class="section-label">Hackathon Submission</span>
+        <h2 class="section-headline">Project Showcase & Architecture</h2>
+        <p class="section-subtext">
+          Aggie Ride was designed and developed for the Texas A&M Makeathon. Explore our open source codebase or watch our product presentation walkthrough.
+        </p>
+      </div>
+
+      <div class="showcase-panels-grid">
+        
+        <!-- Panel 1: GitHub -->
+        <div class="showcase-panel-card github">
+          <div>
+            <div class="panel-header-icon">
+              <!-- GitHub SVG Icon -->
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+            </div>
+            <h3 class="panel-title">Built in the open.</h3>
+            <p class="panel-description">
+              Curious about how we built Aggie Ride? Explore our codebase, schema architecture, state management, and mobile design system.
+            </p>
+          </div>
+          <a href="#" id="githubPanelLink" target="_blank" rel="noopener noreferrer" class="panel-cta-btn">
+            <span>Explore GitHub</span>
+            <span class="material-symbols-outlined" style="font-size:18px;">open_in_new</span>
+          </a>
+        </div>
+
+        <!-- Panel 2: Submission Video -->
+        <div class="showcase-panel-card video">
+          <div>
+            <div class="panel-header-icon">
+              <!-- Video / Play SVG Icon -->
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+              </svg>
+            </div>
+            <h3 class="panel-title">See the bigger picture.</h3>
+            <p class="panel-description">
+              Watch our complete walkthrough video and discover our vision for student mobility across the Texas A&M community.
+            </p>
+          </div>
+          <a href="#" id="videoPanelLink" target="_blank" rel="noopener noreferrer" class="panel-cta-btn">
+            <span>Watch the demo</span>
+            <span class="material-symbols-outlined" style="font-size:18px;">play_arrow</span>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       FOOTER
+       =================================================================== -->
+  <footer class="footer">
+    <div class="container">
+      
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-brand-crest">ATM</div>
+          <span class="footer-brand-name">Aggie Ride</span>
+        </div>
+
+        <ul class="footer-links">
+          <li><a href="#the-problem">The Dilemma</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#ride-intent">Ride Intent</a></li>
+          <li><a href="#explore-app">Interactive App</a></li>
+          <li><a href="#texas-routes">Texas Corridors</a></li>
+          <li><a href="/app" target="_blank">Full Screen Demo</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          © 2026 Aggie Ride • Built with pride for Texas A&M University Makeathon.
+        </div>
+        <div>
+          Independent student initiative. Not officially affiliated with Texas A&M University.
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/landing.js?v=2.0"></script>
+</body>
+</html>

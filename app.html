@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AggieRide — Where Aggies Go, Aggies Ride | Texas A&M</title>
+  
+  <!-- Google Fonts: Google Sans & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
+  <!-- Application Stylesheet (cache-bust) -->
+  <link rel="stylesheet" href="css/style.css?v=3.0">
+  <style>
+    /* Clean embedded mode for Phone Mockup in Landing Page */
+    body.embedded-phone {
+      background: transparent !important;
+      min-height: 100% !important;
+      height: 100vh !important;
+      overflow: hidden !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    body.embedded-phone .demo-toolbar,
+    body.embedded-phone .demo-guide-banner,
+    body.embedded-phone .showcase-story-panel {
+      display: none !important;
+    }
+    body.embedded-phone .showcase-container {
+      display: block !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      height: 100% !important;
+      max-width: 100% !important;
+    }
+    body.embedded-phone .showcase-phone-column {
+      padding: 0 !important;
+      margin: 0 !important;
+      height: 100% !important;
+      width: 100% !important;
+    }
+    body.embedded-phone .phone-mockup-wrapper {
+      max-width: 100% !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      height: 100% !important;
+    }
+    body.embedded-phone .phone-screen {
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      height: 100% !important;
+      max-height: 100% !important;
+      width: 100% !important;
+      border: none !important;
+    }
+    body.embedded-phone .phone-status-bar .dynamic-island {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+  </style>
+  <script>
+    // Force clear old localStorage on first load of redesigned app
+    if (!localStorage.getItem('aggieride_v3_loaded')) {
+      Object.keys(localStorage).forEach(k => { if (k.startsWith('aggieride_')) localStorage.removeItem(k); });
+      localStorage.setItem('aggieride_v3_loaded', 'true');
+    }
+    if (window.self !== window.top || new URLSearchParams(window.location.search).get('embed') === 'true') {
+      document.documentElement.classList.add('embedded-phone');
+      document.addEventListener('DOMContentLoaded', () => {
+        document.body.classList.add('embedded-phone');
+      });
+    }
+
+    // Support dynamic persona switching from landing page showcase
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 'SWITCH_USER' && window.AggieApp) {
+        window.AggieApp.switchUser(event.data.userId);
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <!-- ==============================================
+       TOP EVALUATION TOOLBAR (For Judges & Evaluators)
+       ============================================== -->
+  <header class="demo-toolbar">
+    <div class="demo-toolbar-left">
+      <div class="demo-brand-pill">
+        <span class="tamu-crest">ATM</span>
+        <span style="font-weight:800; font-size:13.5px; color:#fff;">AggieRide</span>
+        <span style="font-size:11px; color:#fca5a5; font-weight:600;">Student Mobility Network</span>
+      </div>
+
+      <!-- Quick Inspection Modals -->
+      <button id="openTourBtn" class="tool-btn" title="View Aggie facts & traditions">
+        <span class="material-symbols-outlined" style="font-size:15px; color:#fde047;">school</span> Aggie Tour
+      </button>
+
+      <button id="openPickupMapBtn" class="tool-btn" title="View 7 shared pickup zones across College Station">
+        <span class="material-symbols-outlined" style="font-size:15px; color:#38bdf8;">pin_drop</span> Shared Pickup Zones
+      </button>
+    </div>
+
+    <div class="demo-toolbar-right">
+      <button id="openPersonaModalBtn" class="tool-btn" style="background:var(--aggie-maroon); color:#fff; font-weight:700;" title="Open Persona Selection Modal">
+        <span class="material-symbols-outlined" style="font-size:16px;">switch_account</span> Choose Persona
+      </button>
+
+      <div class="user-selector-wrapper" title="Switch active Texas A&M student persona">
+        <span class="material-symbols-outlined" style="font-size:16px; color:#ffd8d6;">account_circle</span>
+        <span style="color:#fce8e6; font-size:12px; font-weight:600;">Active Persona:</span>
+        <select id="evaluatorUserSelect">
+          <option value="user-carlos">Carlos Hernandez '26 (Passenger • Park West)</option>
+          <option value="user-maya">Maya Reed '25 (Driver • White Civic)</option>
+          <option value="user-sarah">Sarah Chen '27 (Freshman • Needs Verification)</option>
+          <option value="user-david">David Miller '24 (Grad Driver • Silver RAV4)</option>
+          <option value="user-priya">Priya Patel '25 (Junior Driver • Maroon Elantra)</option>
+        </select>
+      </div>
+
+      <button id="toggleViewModeBtn" class="tool-btn" title="Toggle between mobile phone chassis and full width">
+        <span class="material-symbols-outlined" style="font-size:16px;">fullscreen</span> View Mode
+      </button>
+
+      <button id="resetDataBtn" class="tool-btn" title="Reset all demo data back to clean initial state">
+        <span class="material-symbols-outlined" style="font-size:16px;">restart_alt</span> Reset Demo
+      </button>
+    </div>
+  </header>
+
+  <!-- Quick Demonstration Flow Helper Banner for Judges -->
+  <div class="demo-guide-banner">
+    <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+      <span class="material-symbols-outlined" style="font-size:16px; color:#fde047;">stars</span>
+      <strong>Evaluator Quick Flows:</strong>
+    </div>
+    <div class="guide-flows">
+      <button class="flow-chip flow-guide-btn" data-flow="flow1" title="Carlos posts travel intention & joins Walmart destination group">
+        <strong>Flow 1:</strong> Express Intent & Form Group
+      </button>
+      <button class="flow-chip flow-guide-btn" data-flow="flow2" title="Maya views unmet demand and offers seats">
+        <strong>Flow 2:</strong> Driver Offers Ride
+      </button>
+      <button class="flow-chip flow-guide-btn" data-flow="flow3" title="Carlos requests seat & Maya accepts request">
+        <strong>Flow 3:</strong> Request & Accept Seat
+      </button>
+      <button class="flow-chip flow-guide-btn" data-flow="flow4" title="Inspect 7 shared pickup zones & walking distances">
+        <strong>Flow 4:</strong> Shared Pickup Zones
+      </button>
+      <button class="flow-chip flow-guide-btn" data-flow="flow5" title="Private student-to-driver coordination messaging">
+        <strong>Flow 5:</strong> Private Messaging
+      </button>
+      <button class="flow-chip flow-guide-btn" data-flow="flow6" title="Explore upcoming TAMU Makeathon & carpool to Zachry">
+        <strong>Flow 6:</strong> Event Carpooling
+      </button>
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       PRESENTATION SHOWCASE WRAPPER (Left: Explainer & Journeys, Right: Phone)
+       ============================================================== -->
+  <div class="showcase-container">
+    
+    <!-- LEFT COLUMN: APP VISION, PHILOSOPHY & INTERACTIVE USER JOURNEYS -->
+    <aside class="showcase-story-panel">
+
+      <!-- SECTION 1: PRODUCT HERO & VISION -->
+      <div class="story-hero-card">
+        <div class="story-badge-row">
+          <span class="story-badge"><span class="material-symbols-outlined" style="font-size:14px; color:#fde047;">school</span> Texas A&M University</span>
+          <span class="story-badge"><span class="material-symbols-outlined" style="font-size:14px; color:#38bdf8;">navigation</span> Travel Intent First</span>
+          <span class="story-badge"><span class="material-symbols-outlined" style="font-size:14px; color:#4ade80;">offline_pin</span> LocalStorage Fallback</span>
+        </div>
+        <h1>AggieRide: Mobility Powered by Travel Intent</h1>
+        <p>
+          Every day, thousands of Aggies in College Station and Bryan head to the exact same places: Walmart, H-E-B, Target, campus buildings, and campus events. AggieRide replaces transactional ride-hailing with a community mobility platform centered on <strong>travel intent</strong>.
+        </p>
+        <div class="story-actions-row">
+          <button class="story-btn-primary" id="storyChoosePersonaBtn">
+            <span class="material-symbols-outlined" style="font-size:17px;">switch_account</span> Choose Persona to Start
+          </button>
+          <button class="story-btn-outline" id="storyInspectHubsBtn">
+            <span class="material-symbols-outlined" style="font-size:17px;">pin_drop</span> 7 Pickup Hubs
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION 2: CORE PHILOSOPHY CONTRAST -->
+      <div class="philosophy-card">
+        <h3 style="font-size:15px; font-weight:700; color:#fff; display:flex; align-items:center; gap:8px;">
+          <span class="material-symbols-outlined" style="color:var(--aggie-gold); font-size:20px;">lightbulb</span>
+          Why AggieRide is NOT an Uber Clone
+        </h3>
+        <div class="philosophy-grid">
+          <div class="philosophy-col negative">
+            <h4 style="color:#f87171;"><span class="material-symbols-outlined" style="font-size:16px;">close</span> Traditional Ride Apps</h4>
+            <ul>
+              <li>• Driver lists route; riders search blindly</li>
+              <li>• Transactional surge pricing ($18-25 for 3 miles)</li>
+              <li>• Riding with unverified strangers</li>
+              <li>• Individual door-to-door suburban delays</li>
+            </ul>
+          </div>
+          <div class="philosophy-col positive">
+            <h4 style="color:#34d399;"><span class="material-symbols-outlined" style="font-size:16px;">check</span> The AggieRide Paradigm</h4>
+            <ul>
+              <li>• <strong>Students express travel intent</strong> ("Heading to Walmart Sat 11 AM")</li>
+              <li>• <strong>Automated destination clusters</strong> with 4 live community metrics</li>
+              <li>• <strong>Student drivers offer seats</strong> to existing demand</li>
+              <li>• <strong>7 predefined campus pickup hubs</strong> eliminate detours</li>
+              <li>• <strong>100% verified Aggies</strong> with directory OTP check</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: THE 7 INTERACTIVE USER JOURNEYS -->
+      <div>
+        <div class="story-section-title">
+          <span class="material-symbols-outlined" style="color:var(--aggie-gold); font-size:22px;">explore</span>
+          Explore the 7 Core User Journeys
+        </div>
+        <p style="font-size:13px; color:#9ca3af; margin:4px 0 16px 0;">
+          Click any <strong>"Try Journey in Phone Frame"</strong> button below to automatically pilot the mobile app in the phone chassis on the right!
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          
+          <!-- Journey 1 -->
+          <div class="journey-card">
+            <div class="journey-card-header">
+              <span class="journey-step-tag">Journey 1 • Passenger</span>
+              <button class="story-flow-btn flow-guide-btn" data-flow="flow1">
+                <span class="material-symbols-outlined" style="font-size:15px;">play_circle</span> Try Journey 1 in Phone Frame
+              </button>
+            </div>
+            <h3>Express Travel Intent & Form Destination Groups</h3>
+            <p>
+              Carlos enters his destination (Walmart), preferred time (Saturday 11 AM), $\pm 1$ hour flexibility window, and pickup area (Park West). AggieRide instantly clusters him into an active group with 4 live metrics: Interested Aggies, Looking for driver, Offered seats, and Group Status.
+            </p>
+            <div class="journey-features-list">
+              <span class="journey-feat-pill">Intent Input Form</span>
+              <span class="journey-feat-pill">4 Community Metrics</span>
+              <span class="journey-feat-pill">Group Formation</span>
+              <span class="journey-feat-pill">Subtle Feedback</span>
+            </div>
+          </div>
+
+          <!-- Journey 2 -->
+          <div class="journey-card">
+            <div class="journey-card-header">
+              <span class="journey-step-tag">Journey 2 • Driver</span>
+              <button class="story-flow-btn flow-guide-btn" data-flow="flow2">
+                <span class="material-symbols-outlined" style="font-size:15px;">play_circle</span> Try Journey 2 in Phone Frame
+              </button>
+            </div>
+            <h3>Driver Discovers Unmet Demand & Offers Ride</h3>
+            <p>
+              Maya logs in as a verified driver with her 2022 Honda Civic. The app highlights an unmet student demand banner: <em>"6 Aggies want to go to Walmart Saturday morning. Heading there?"</em>. Maya taps to offer 3 seats to the cluster.
+            </p>
+            <div class="journey-features-list">
+              <span class="journey-feat-pill">Role Isolation (Drivers Only)</span>
+              <span class="journey-feat-pill">Demand Alert Banner</span>
+              <span class="journey-feat-pill">Instant Seat Offering</span>
+            </div>
+          </div>
+
+          <!-- Journey 3 -->
+          <div class="journey-card">
+            <div class="journey-card-header">
+              <span class="journey-step-tag">Journey 3 • Coordination</span>
+              <button class="story-flow-btn flow-guide-btn" data-flow="flow3">
+                <span class="material-symbols-outlined" style="font-size:15px;">play_circle</span> Try Journey 3 in Phone Frame
+              </button>
+            </div>
+            <h3>Seat Request & Real-time Acceptance</h3>
+            <p>
+              Carlos requests a seat in Maya's ride from the Park West pickup hub. Maya receives the request in her "Offered Rides" management tab, reviews Carlos's student profile, and approves the seat. Remaining seats decrement automatically.
+            </p>
+            <div class="journey-features-list">
+              <span class="journey-feat-pill">Passenger Request</span>
+              <span class="journey-feat-pill">Driver Approval Flow</span>
+              <span class="journey-feat-pill">Dynamic Capacity Update</span>
+            </div>
+          </div>
+
+          <!-- Journey 4 -->
+          <div class="journey-card">
+            <div class="journey-card-header">
+              <span class="journey-step-tag">Journey 4 • Logistics</span>
+              <button class="story-flow-btn flow-guide-btn" data-flow="flow4">
+                <span class="material-symbols-outlined" style="font-size:15px;">play_circle</span> Try Journey 4 in Phone Frame
+              </button>
+            </div>
+            <h3>7 Shared Predefined Pickup Hubs</h3>
+            <p>
+              College Station apartment complexes have complicated security gates and speed bumps. AggieRide replaces chaotic door-to-door pickups with 7 designated, safe student hubs: MSC, Northgate, Park West, White Creek, The Gardens, Univ Apts, and Century Square.
+            </p>
+            <div class="journey-features-list">
+              <span class="journey-feat-pill">Interactive Hub Map</span>
+              <span class="journey-feat-pill">Walking Distance Estimator</span>
+              <span class="journey-feat-pill">Zero Suburban Detours</span>
+            </div>
+          </div>
+
+          <!-- Journey 5 -->
+          <div class="journey-card">
+            <div class="journey-card-header">
+              <span class="journey-step-tag">Journey 5 • Safety</span>
+              <button class="story-flow-btn flow-guide-btn" data-flow="flow7">
+                <span class="material-symbols-outlined" style="font-size:15px;">play_circle</span> Try Journey 5 in Phone Frame
+              </button>
+            </div>
+            <h3>Boarding OTP & Student Safety Verification</h3>
+            <p>
+              Before boarding, Carlos views his official Digital Boarding Pass with a cryptographic 6-digit OTP code (<code>AG-7193</code>). Passengers present this code to the driver to prevent wrong-car boarding. All users require verified <code>@tamu.edu</code> credentials.
+            </p>
+            <div class="journey-features-list">
+              <span class="journey-feat-pill">Boarding Pass & OTP (AG-7193)</span>
+              <span class="journey-feat-pill">TAMU Directory Verification</span>
+              <span class="journey-feat-pill">Zero Stranger Risk</span>
+            </div>
+          </div>
+
+          <!-- Journey 6 -->
+          <div class="journey-card">
+            <div class="journey-card-header">
+              <span class="journey-step-tag">Journey 6 • Communication</span>
+              <button class="story-flow-btn flow-guide-btn" data-flow="flow5">
+                <span class="material-symbols-outlined" style="font-size:15px;">play_circle</span> Try Journey 6 in Phone Frame
+              </button>
+            </div>
+            <h3>Private Contextual Coordination Messaging</h3>
+            <p>
+              In-app direct messaging allows Carlos and Maya to coordinate exact arrival timing at the Park West Tower 1 Circle without sharing personal phone numbers. The ride route and status remain pinned at the top of the chat.
+            </p>
+            <div class="journey-features-list">
+              <span class="journey-feat-pill">In-App Chat</span>
+              <span class="journey-feat-pill">Pinned Ride Banner</span>
+              <span class="journey-feat-pill">Privacy Preserved</span>
+            </div>
+          </div>
+
+          <!-- Journey 7 -->
+          <div class="journey-card">
+            <div class="journey-card-header">
+              <span class="journey-step-tag">Journey 7 • Community</span>
+              <button class="story-flow-btn flow-guide-btn" data-flow="flow6">
+                <span class="material-symbols-outlined" style="font-size:15px;">play_circle</span> Try Journey 7 in Phone Frame
+              </button>
+            </div>
+            <h3>Campus Events & Aggie Traditions Carpooling</h3>
+            <p>
+              Aggies can discover and join carpool groups for campus events like the <strong>TAMU Makeathon at Zachry Complex</strong>, Kyle Field Game Day, Midnight Yell, and First Friday Bryan, arriving together as a group.
+            </p>
+            <div class="journey-features-list">
+              <span class="journey-feat-pill">TAMU Makeathon Hub</span>
+              <span class="journey-feat-pill">Game Day Carpooling</span>
+              <span class="journey-feat-pill">1-Click Group Join</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECTION 4: STUDENT PERSONAS OVERVIEW -->
+      <div class="philosophy-card">
+        <h3 style="font-size:15px; font-weight:700; color:#fff; display:flex; align-items:center; gap:8px;">
+          <span class="material-symbols-outlined" style="color:var(--aggie-gold); font-size:20px;">people</span>
+          Switch Personas to Test Different Perspectives
+        </h3>
+        <p style="font-size:12.5px; color:#9ca3af; margin:4px 0 10px 0;">
+          AggieRide adapts dynamically based on whether you are a passenger, verified driver, or new student:
+        </p>
+
+        <div class="personas-grid">
+          <!-- Carlos -->
+          <div class="persona-info-card persona-quick-select" data-user="user-carlos">
+            <div class="persona-card-header">
+              <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=120&auto=format&fit=crop&q=80" class="persona-avatar-sm" alt="Carlos">
+              <div>
+                <strong style="font-size:13px; color:#fff; display:block;">Carlos Hernandez</strong>
+                <span class="persona-role-badge">Passenger • Sophomore</span>
+              </div>
+            </div>
+            <p style="font-size:11.5px; color:#9ca3af; margin:0;">
+              Lives at Park West. Expresses intent for Walmart and holds confirmed boarding pass.
+            </p>
+          </div>
+
+          <!-- Maya -->
+          <div class="persona-info-card persona-quick-select" data-user="user-maya">
+            <div class="persona-card-header">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80" class="persona-avatar-sm" alt="Maya">
+              <div>
+                <strong style="font-size:13px; color:#fff; display:block;">Maya Reed</strong>
+                <span class="persona-role-badge" style="color:#86efac;">Verified Driver • Senior</span>
+              </div>
+            </div>
+            <p style="font-size:11.5px; color:#9ca3af; margin:0;">
+              2022 Honda Civic. Sees demand alert banner and manages passenger seat requests.
+            </p>
+          </div>
+
+          <!-- Sarah -->
+          <div class="persona-info-card persona-quick-select" data-user="user-sarah">
+            <div class="persona-card-header">
+              <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80" class="persona-avatar-sm" alt="Sarah">
+              <div>
+                <strong style="font-size:13px; color:#fff; display:block;">Sarah Chen</strong>
+                <span class="persona-role-badge" style="color:#fde047;">Freshman • Unverified</span>
+              </div>
+            </div>
+            <p style="font-size:11.5px; color:#9ca3af; margin:0;">
+              Hullabaloo Hall. Experiences the TAMU directory onboarding and verification flow.
+            </p>
+          </div>
+
+          <!-- David -->
+          <div class="persona-info-card persona-quick-select" data-user="user-david">
+            <div class="persona-card-header">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" class="persona-avatar-sm" alt="David">
+              <div>
+                <strong style="font-size:13px; color:#fff; display:block;">David Miller</strong>
+                <span class="persona-role-badge" style="color:#86efac;">Grad Driver • Silver RAV4</span>
+              </div>
+            </div>
+            <p style="font-size:11.5px; color:#9ca3af; margin:0;">
+              Commuter from Bryan driving to Zachry Engineering Complex for Makeathon.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 5: FREE HOSTING & DEPLOYMENT GUIDE -->
+      <div class="hosting-guide-card">
+        <h3 style="font-size:15px; font-weight:700; color:#38bdf8; display:flex; align-items:center; gap:8px;">
+          <span class="material-symbols-outlined" style="font-size:20px;">cloud_upload</span>
+          Free Hosting & Deployment Instructions
+        </h3>
+        <p style="font-size:12.5px; color:#cbd5e1; margin:6px 0 10px 0;">
+          This application is 100% self-contained with automatic <strong>LocalStorage Fallback</strong> (zero backend server required). You can deploy it to any free static host in under 60 seconds:
+        </p>
+
+        <div class="hosting-options-grid">
+          <!-- GitHub Pages -->
+          <div class="hosting-option-pill">
+            <strong>1. GitHub Pages (Free)</strong>
+            <span>Push to GitHub and enable Pages in repository settings:</span>
+            <code>git push origin main</code>
+            <span style="font-size:11px; color:#94a3b8; display:block; margin-top:4px;">Settings &gt; Pages &gt; Deploy from Branch (main)</span>
+          </div>
+
+          <!-- Vercel -->
+          <div class="hosting-option-pill">
+            <strong>2. Vercel (Instant Free)</strong>
+            <span>Run Vercel CLI from project root:</span>
+            <code>npx vercel --prod</code>
+            <span style="font-size:11px; color:#94a3b8; display:block; margin-top:4px;">Generates live HTTPS URL in 20 seconds.</span>
+          </div>
+
+          <!-- Netlify -->
+          <div class="hosting-option-pill">
+            <strong>3. Netlify (Drag & Drop)</strong>
+            <span>Drop this project folder directly onto:</span>
+            <code>app.netlify.com/drop</code>
+            <span style="font-size:11px; color:#94a3b8; display:block; margin-top:4px;">Instant free deployment with custom URL.</span>
+          </div>
+
+          <!-- Firebase Hosting -->
+          <div class="hosting-option-pill">
+            <strong>4. Firebase Hosting</strong>
+            <span>Deploy using the included config:</span>
+            <code>firebase deploy --only hosting</code>
+            <span style="font-size:11px; color:#94a3b8; display:block; margin-top:4px;">Live on &lt;project&gt;.web.app</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- RIGHT COLUMN: INTERACTIVE PHONE FRAME -->
+    <section class="showcase-phone-column">
+
+      <!-- ==============================================
+           PHONE MOCKUP CHASSIS (Mobile App Experience)
+           ============================================== -->
+      <main class="phone-mockup-wrapper">
+        <div class="phone-screen">
+
+      <!-- Phone Hardware Status Bar -->
+      <div class="phone-status-bar">
+        <span class="status-time">9:41</span>
+        <div class="dynamic-island">
+          <div class="camera-lens"></div>
+        </div>
+        <div class="status-icons">
+          <span class="material-symbols-outlined">signal_cellular_4_bar</span>
+          <span class="material-symbols-outlined">wifi</span>
+          <span class="material-symbols-outlined">battery_full</span>
+        </div>
+      </div>
+
+      <!-- App Header Bar -->
+      <div class="app-header">
+        <div class="brand-section" id="headerBrandClick" style="cursor:pointer;">
+          <div class="app-logo-badge">
+            <span class="material-symbols-outlined" style="font-size:22px;">directions_car</span>
+          </div>
+          <div class="brand-welcome">
+            <h2 id="headerGreeting">Hey, Aggie!</h2>
+            <p>Where are we going today?</p>
+          </div>
+        </div>
+
+        <div class="header-user-actions">
+          <div class="icon-btn-pill" id="notificationBtn" title="Notifications">
+            <span class="material-symbols-outlined" style="font-size:20px; color:var(--text-secondary);">notifications</span>
+            <span class="unread-dot" id="headerNotificationDot" style="display:none;"></span>
+          </div>
+          <div class="avatar-pill" id="headerAvatarBtn" title="View Profile">
+            <img id="headerUserAvatar" src="" alt="Profile">
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating Action Button for Drivers ONLY -->
+      <button class="driver-fab" id="driverOfferFab" title="Offer a ride to an Aggie destination group">
+        <span class="material-symbols-outlined" style="font-size:18px;">add_circle</span> Offer a Ride
+      </button>
+
+      <!-- Toast Notification Alert -->
+      <div class="toast-notification" id="appToast">
+        <span class="material-symbols-outlined" id="toastIcon" style="font-size:18px; color:#fde047;">check_circle</span>
+        <span id="toastMessage">Found your people!</span>
+      </div>
+
+      <!-- Scrollable App Content Container -->
+      <div class="app-content-scroll" id="mainAppScroll">
+
+        <!-- ==============================================================
+             TAB 1: HOME SCREEN (Travel Intentions & Community Discovery)
+             ============================================================== -->
+        <section class="page-tab-content active" id="tab-home">
+
+          <!-- Section B: Aggie Fact of the Day -->
+          <div class="aggie-fact-card" id="aggieFactCard">
+            <div class="fact-icon-wrapper">
+              <span class="material-symbols-outlined" id="factIcon">school</span>
+            </div>
+            <div class="fact-text-content">
+              <span class="fact-badge" id="factTag">Did you know, Aggie?</span>
+              <div class="fact-title" id="factTitle">Texas A&M Established 1876</div>
+              <div class="fact-body" id="factText">Texas's first public higher education institution opened in Bryan-College Station.</div>
+            </div>
+            <button class="fact-cycle-btn" id="nextFactBtn" title="Next Aggie Fact">
+              <span class="material-symbols-outlined" style="font-size:18px;">cached</span>
+            </button>
+          </div>
+
+          <!-- Driver Callout Prompt (Only shown when active persona is a registered driver) -->
+          <div class="driver-callout-banner" id="driverDemandBanner" style="display:none;">
+            <div class="driver-callout-text">
+              <h4>Demand Alert for Drivers</h4>
+              <p id="driverDemandPrompt">6 Aggies want to go to Walmart Saturday. Are you heading there?</p>
+            </div>
+            <button class="btn-driver-action" id="driverBannerOfferBtn">Offer a Ride</button>
+          </div>
+
+          <!-- Section C: Primary Travel Intention Section ("Where are you heading?") -->
+          <div class="intent-hero-container">
+            <div class="intent-hero-header">
+              <h1>Where are you heading?</h1>
+              <p>Tell us where you want to go. We'll help you find Aggies going the same way.</p>
+            </div>
+
+            <form class="intent-form" id="travelIntentForm" onsubmit="return false;">
+              <!-- Destination -->
+              <div class="intent-input-group">
+                <span class="material-symbols-outlined">location_on</span>
+                <input type="text" id="intentDestinationInput" placeholder="Enter destination (e.g., Walmart, H-E-B, Target, Campus)" required autocomplete="off">
+              </div>
+
+              <!-- Starting Area / Shared Pickup Zone -->
+              <div class="intent-input-group">
+                <span class="material-symbols-outlined">pin_drop</span>
+                <select id="intentPickupZoneSelect" required>
+                  <option value="" disabled selected>Select starting area or pickup point</option>
+                  <option value="Park West Apartments">Park West Apartments (Tower 1 / Flats)</option>
+                  <option value="MSC / Rudder Plaza Vicinity">MSC / Rudder Plaza Vicinity (Central Campus)</option>
+                  <option value="Northgate / College Main">Northgate / College Main (Northside)</option>
+                  <option value="White Creek Apartments">White Creek Apartments (West Campus)</option>
+                  <option value="The Gardens Apartments">The Gardens Apartments (South CS)</option>
+                  <option value="University Apartments">University Apartments (East Campus)</option>
+                  <option value="Century Square">Century Square (Shopping / Dining)</option>
+                  <option value="Custom Location">Custom Apartment / Pickup Spot</option>
+                </select>
+              </div>
+
+              <!-- Date & Time Row -->
+              <div class="intent-form-row">
+                <div class="intent-input-group">
+                  <span class="material-symbols-outlined">calendar_today</span>
+                  <select id="intentDateSelect">
+                    <option value="Today (Friday)">Today (Friday)</option>
+                    <option value="Tomorrow (Saturday)">Tomorrow (Saturday)</option>
+                    <option value="Saturday, Nov 8" selected>Saturday, Nov 8</option>
+                    <option value="Sunday, Nov 9">Sunday, Nov 9</option>
+                    <option value="Monday, Nov 10">Monday, Nov 10</option>
+                  </select>
+                </div>
+                <div class="intent-input-group">
+                  <span class="material-symbols-outlined">schedule</span>
+                  <input type="text" id="intentTimeInput" value="11:00 AM" placeholder="Time (e.g. 11:00 AM)">
+                </div>
+              </div>
+
+              <!-- Flexibility & Passengers -->
+              <div class="intent-form-row">
+                <div class="intent-input-group">
+                  <span class="material-symbols-outlined">timelapse</span>
+                  <select id="intentFlexibilitySelect">
+                    <option value="Exact time">Exact time</option>
+                    <option value="±30 mins">±30 minutes</option>
+                    <option value="±1 hour" selected>±1 hour window</option>
+                    <option value="Anytime morning">Anytime morning</option>
+                    <option value="Anytime afternoon">Anytime afternoon</option>
+                  </select>
+                </div>
+                <div class="intent-input-group">
+                  <span class="material-symbols-outlined">person</span>
+                  <select id="intentPassengersSelect">
+                    <option value="1">1 Passenger</option>
+                    <option value="2">2 Passengers</option>
+                    <option value="3">3 Passengers</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Primary Action Button -->
+              <button type="submit" class="btn-primary-intent" id="findMyPeopleBtn">
+                <span class="material-symbols-outlined" style="font-size:18px;">groups</span>
+                Find my people
+              </button>
+
+              <div class="intent-subtle-link" id="flexibleIntentLink">
+                Not sure when? Just express your interest.
+              </div>
+            </form>
+          </div>
+
+          <!-- Section D: Popular Destinations Shortcuts -->
+          <div class="section-block">
+            <div class="section-title-row">
+              <h3>Popular Destinations</h3>
+              <span class="section-action-link" id="viewAllDestinationsLink">Explore all</span>
+            </div>
+            <div class="popular-chips-grid" id="popularDestinationsGrid">
+              <!-- Dynamically rendered popular destination chips -->
+            </div>
+          </div>
+
+          <!-- Section E: Where Aggies are Heading Today (Destination Groups) -->
+          <div class="section-block">
+            <div class="section-title-row">
+              <h3>Where Aggies are heading today</h3>
+              <span class="section-action-link" onclick="window.AggieApp.navigateToTab('discover')">See all groups</span>
+            </div>
+            <div class="groups-container" id="homeGroupsContainer">
+              <!-- Rendered destination groups with 4 explicit metrics -->
+            </div>
+          </div>
+
+          <!-- Section F: What's Happening Around Aggieland? (Events Discovery) -->
+          <div class="section-block">
+            <div class="section-title-row">
+              <h3>What's happening around Aggieland?</h3>
+              <span class="section-action-link" onclick="window.AggieApp.navigateToTab('discover')">View schedule</span>
+            </div>
+            <div class="events-carousel" id="homeEventsCarousel">
+              <!-- Rendered upcoming TAMU events with 'Find Aggies going' action -->
+            </div>
+          </div>
+
+          <!-- Section G: Interests ("Find your kind of people") -->
+          <div class="section-block">
+            <div class="section-title-row">
+              <h3>Find your kind of people</h3>
+              <span style="font-size:11px; color:var(--text-muted);">Filter trips by interest</span>
+            </div>
+            <div class="interests-cloud" id="homeInterestsCloud">
+              <!-- Rendered interest pills -->
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==============================================================
+             TAB 2: DISCOVER SCREEN (Explore Destination Groups & Events)
+             ============================================================== -->
+        <section class="page-tab-content" id="tab-discover">
+          <div style="margin-bottom:16px;">
+            <h2 style="font-size:20px; font-weight:800; color:var(--text-main); margin-bottom:4px;">Community Discovery</h2>
+            <p style="font-size:12.5px; color:var(--text-secondary);">Browse active travel groups and connect with fellow Aggies heading your way.</p>
+          </div>
+
+          <!-- Search Bar -->
+          <div class="intent-input-group" style="margin-bottom:12px;">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" id="discoverSearchInput" placeholder="Search destinations, stores, campus buildings...">
+          </div>
+
+          <!-- Filter Pills -->
+          <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; margin-bottom:14px;" id="discoverFilterRow">
+            <button class="flow-chip active" data-filter="All">All Groups</button>
+            <button class="flow-chip" data-filter="Ride available">Rides Available</button>
+            <button class="flow-chip" data-filter="Looking for a driver">Needs Driver</button>
+            <button class="flow-chip" data-filter="Groceries">Groceries</button>
+            <button class="flow-chip" data-filter="Campus">Campus Commute</button>
+          </div>
+
+          <!-- All Destination Groups Feed -->
+          <div class="groups-container" id="discoverGroupsContainer">
+            <!-- Rendered groups -->
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             TAB 3: MY JOURNEYS (Intentions, Groups, Upcoming, Offered)
+             ============================================================== -->
+        <section class="page-tab-content" id="tab-journeys">
+          <div style="margin-bottom:14px;">
+            <h2 style="font-size:20px; font-weight:800; color:var(--text-main); margin-bottom:4px;">My Journeys</h2>
+            <p style="font-size:12.5px; color:var(--text-secondary);">Manage your travel plans, joined groups, and confirmed rides.</p>
+          </div>
+
+          <!-- Sub-Tab Navigation Header -->
+          <div class="journeys-tab-header">
+            <button class="journey-subtab-btn active" data-subtab="intentions">My Intentions</button>
+            <button class="journey-subtab-btn" data-subtab="groups">Joined Groups</button>
+            <button class="journey-subtab-btn" data-subtab="upcoming">Upcoming Rides</button>
+            <button class="journey-subtab-btn" data-subtab="offered" id="subtabOfferedBtn" style="display:none;">Offered Rides</button>
+          </div>
+
+          <!-- Subtab 1: My Intentions -->
+          <div class="journey-subtab-content active" id="subtab-content-intentions">
+            <div id="myIntentionsList">
+              <!-- Rendered intentions -->
+            </div>
+          </div>
+
+          <!-- Subtab 2: Joined Groups -->
+          <div class="journey-subtab-content" id="subtab-content-groups" style="display:none;">
+            <div id="myJoinedGroupsList">
+              <!-- Rendered joined groups -->
+            </div>
+          </div>
+
+          <!-- Subtab 3: Upcoming Rides -->
+          <div class="journey-subtab-content" id="subtab-content-upcoming" style="display:none;">
+            <div id="myUpcomingRidesList">
+              <!-- Rendered passenger ride bookings with Boarding OTP -->
+            </div>
+          </div>
+
+          <!-- Subtab 4: Offered Rides (Drivers only) -->
+          <div class="journey-subtab-content" id="subtab-content-offered" style="display:none;">
+            <div id="myOfferedRidesList">
+              <!-- Rendered driver rides & passenger requests to accept/reject -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             TAB 4: MESSAGES (Simple, Private Coordination)
+             ============================================================== -->
+        <section class="page-tab-content" id="tab-messages">
+          <!-- Conversations List View -->
+          <div id="conversationsListView">
+            <div style="margin-bottom:14px;">
+              <h2 style="font-size:20px; font-weight:800; color:var(--text-main); margin-bottom:4px;">Ride Coordination</h2>
+              <p style="font-size:12.5px; color:var(--text-secondary);">Coordinate pickup details safely with verified TAMU drivers and passengers.</p>
+            </div>
+
+            <div class="chat-privacy-notice">
+              <span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle; color:var(--aggie-maroon);">shield</span>
+              Personal phone numbers remain private. Only Texas A&M verified students.
+            </div>
+
+            <div id="conversationsListContainer">
+              <!-- Rendered conversations -->
+            </div>
+          </div>
+
+          <!-- Active Chat Room View (Hidden until user taps a conversation) -->
+          <div id="activeChatRoomView" style="display:none;">
+            <div class="chat-room-header">
+              <button class="icon-btn-pill" id="backToConversationsBtn" style="width:30px; height:30px;">
+                <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span>
+              </button>
+              <div class="avatar-pill" style="width:34px; height:34px;">
+                <img id="chatPartnerAvatar" src="" alt="Partner">
+              </div>
+              <div style="flex:1;">
+                <div style="font-size:13.5px; font-weight:700;" id="chatPartnerName">Maya Reed</div>
+                <div style="font-size:11px; color:#059669; font-weight:600;" id="chatPartnerRole">Verified TAMU Driver</div>
+              </div>
+              <button class="icon-btn-pill" id="chatInfoBtn" title="Report or Block" style="width:30px; height:30px;">
+                <span class="material-symbols-outlined" style="font-size:18px;">more_vert</span>
+              </button>
+            </div>
+
+            <!-- Contextual Ride Pill at Top of Conversation -->
+            <div class="chat-context-banner" id="chatRideContextBanner">
+              <div>
+                <strong id="chatContextDestination">Walmart Supercenter</strong>
+                <div style="font-size:10.5px; color:var(--text-secondary);" id="chatContextTime">Sat, Nov 8 • 11:00 AM • Park West Tower 1</div>
+              </div>
+              <span class="group-status-badge status-available" id="chatContextStatus">Confirmed Ride</span>
+            </div>
+
+            <!-- Messages Stream -->
+            <div class="chat-messages-scroll" id="chatMessagesScroll">
+              <!-- Rendered message bubbles -->
+            </div>
+
+            <!-- Chat Input Bar -->
+            <form class="chat-input-bar" id="chatMessageForm" onsubmit="return false;">
+              <input type="text" id="chatTextInput" placeholder="Type a message to coordinate pickup..." autocomplete="off">
+              <button type="submit" class="btn-chat-send" id="sendChatBtn">
+                <span class="material-symbols-outlined" style="font-size:18px;">send</span>
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             TAB 5: PROFILE SCREEN (Student Profile & Driver Registration)
+             ============================================================== -->
+        <section class="page-tab-content" id="tab-profile">
+          <div class="profile-card-main">
+            <div class="profile-avatar-large">
+              <img id="profileAvatarImg" src="" alt="Profile">
+            </div>
+            <h2 class="profile-name" id="profileName">Carlos Hernandez</h2>
+            <div class="profile-major" id="profileClassMajor">'26 (Sophomore) • Industrial Engineering</div>
+            
+            <div id="profileVerificationBadge">
+              <span class="tamu-verified-badge">
+                <span class="material-symbols-outlined" style="font-size:14px;">verified</span> TAMU Email Verified
+              </span>
+            </div>
+
+            <p class="profile-bio" id="profileBio">Sophomore living at Park West. No car this semester, always respectful passenger and prompt with gas splits!</p>
+
+            <div class="profile-stats-grid">
+              <div>
+                <div class="metric-num" id="profileRidesJoined">14</div>
+                <div class="metric-lbl">Rides Joined</div>
+              </div>
+              <div>
+                <div class="metric-num" id="profileRidesOffered">0</div>
+                <div class="metric-lbl">Rides Offered</div>
+              </div>
+              <div>
+                <div class="metric-num" id="profileRating">4.95 ★</div>
+                <div class="metric-lbl">Aggie Rating</div>
+              </div>
+            </div>
+
+            <!-- Driver Section (Driver Badge or Registration Link) -->
+            <div class="driver-info-box" id="profileDriverSection">
+              <!-- Injected by JavaScript depending on driverStatus -->
+            </div>
+          </div>
+
+          <!-- Interests Section in Profile -->
+          <div class="section-block">
+            <h4 style="font-size:14px; font-weight:800; margin-bottom:8px;">My Interests</h4>
+            <div class="interests-cloud" id="profileInterestsList">
+              <!-- Injected pills -->
+            </div>
+          </div>
+        </section>
+
+      </div><!-- End app-content-scroll -->
+
+      <!-- ==============================================================
+           BOTTOM NAVIGATION BAR (5 Clean Tabs)
+           ============================================================== -->
+      <nav class="bottom-nav-bar">
+        <button class="nav-tab-item active" data-tab="home" title="Home">
+          <span class="material-symbols-outlined">explore</span>
+          <span class="nav-tab-label">Home</span>
+        </button>
+
+        <button class="nav-tab-item" data-tab="discover" title="Discover">
+          <span class="material-symbols-outlined">group_work</span>
+          <span class="nav-tab-label">Discover</span>
+        </button>
+
+        <button class="nav-tab-item" data-tab="journeys" title="My Journeys">
+          <span class="material-symbols-outlined">route</span>
+          <span class="nav-tab-label">My Journeys</span>
+        </button>
+
+        <button class="nav-tab-item" data-tab="messages" title="Messages">
+          <span class="material-symbols-outlined">chat_bubble</span>
+          <span class="nav-tab-label">Messages</span>
+          <span class="nav-badge-dot" id="navMessagesBadge" style="display:none;">1</span>
+        </button>
+
+        <button class="nav-tab-item" data-tab="profile" title="Profile">
+          <span class="material-symbols-outlined">person</span>
+          <span class="nav-tab-label">Profile</span>
+        </button>
+      </nav>
+
+      <!-- ==============================================================
+           MODAL 1: TRAVEL INTENTION DELIGHT CONFIRMATION ("Your plan is out there!")
+           ============================================================== -->
+      <div class="modal-overlay" id="delightModal">
+        <div class="bottom-sheet">
+          <div class="sheet-handle"></div>
+          <div class="delight-modal-content">
+            <div class="car-animation-box">
+              <span class="material-symbols-outlined">directions_car</span>
+            </div>
+            <h3 class="delight-title">Your plan is out there!</h3>
+            <p class="delight-subtitle" id="delightSubtitle">4 other Aggies are heading to Walmart this Saturday. We've matched you with an active destination group!</p>
+
+            <div style="background:var(--bg-subtle); border-radius:var(--radius-md); padding:12px; margin-bottom:16px; text-align:left;">
+              <div style="font-size:11px; font-weight:700; color:var(--aggie-maroon); margin-bottom:4px;" id="delightMatchedGroupTitle">MATCHED DESTINATION GROUP</div>
+              <div style="font-size:14px; font-weight:800; color:var(--text-main);" id="delightDestinationName">Walmart Supercenter</div>
+              <div style="font-size:12px; color:var(--text-secondary);" id="delightGroupDetails">Saturday Morning • 2 Drivers Offering Seats</div>
+            </div>
+
+            <button class="btn-primary-intent" id="delightViewGroupBtn" style="width:100%; margin-bottom:8px;">
+              View Destination Group
+            </button>
+            <button class="btn-secondary-sm" id="delightDismissBtn" style="width:100%;">
+              Back to Home
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==============================================================
+           MODAL 2: DESTINATION GROUP DETAILS SHEET
+           ============================================================== -->
+      <div class="modal-overlay" id="groupDetailModal">
+        <div class="bottom-sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-header-row">
+            <div>
+              <span class="group-status-badge" id="modalGroupStatus">Ride available</span>
+              <h3 style="margin-top:4px;" id="modalGroupDestination">Walmart Supercenter</h3>
+              <p style="font-size:12px; color:var(--text-secondary);" id="modalGroupTime">Saturday, Nov 8 • 11:00 AM – 1:00 PM</p>
+            </div>
+            <button class="sheet-close-btn" id="closeGroupModalBtn">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <p style="font-size:12.5px; color:var(--text-secondary); margin-bottom:12px;" id="modalGroupDescription">
+            Weekly grocery run to Walmart. Drivers are ready to help carry shopping bags.
+          </p>
+
+          <!-- Metrics Row -->
+          <div class="group-metrics-row">
+            <div class="group-metric-item">
+              <span class="metric-num" id="modalInterestedCount">6</span>
+              <span class="metric-lbl">Aggies Interested</span>
+            </div>
+            <div class="group-metric-item">
+              <span class="metric-num" id="modalDriversCount">2</span>
+              <span class="metric-lbl">Drivers Offering</span>
+            </div>
+            <div class="group-metric-item">
+              <span class="metric-num" id="modalSeatsCount">3</span>
+              <span class="metric-lbl">Open Seats</span>
+            </div>
+          </div>
+
+          <!-- Pickup Points -->
+          <div style="margin:12px 0;">
+            <h4 style="font-size:13px; font-weight:800; margin-bottom:6px;">Pickup Points Coordinated:</h4>
+            <div id="modalPickupZonesList" style="display:flex; flex-wrap:wrap; gap:6px;">
+              <!-- Badges -->
+            </div>
+          </div>
+
+          <!-- Participants List -->
+          <div style="margin:12px 0;">
+            <h4 style="font-size:13px; font-weight:800; margin-bottom:8px;">Interested Aggies & Drivers:</h4>
+            <div id="modalParticipantsList" style="display:flex; flex-direction:column; gap:8px; max-height:160px; overflow-y:auto;">
+              <!-- Injected participant items -->
+            </div>
+          </div>
+
+          <div style="font-size:11px; color:var(--text-muted); margin:8px 0; background:#FFFBFB; padding:8px 10px; border-radius:6px; border:1px solid rgba(80,0,0,0.06);">
+            ℹ️ A travel intention is an expression of community demand, not a confirmed ride. Seats become confirmed once a driver accepts a request.
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:10px;" id="modalGroupActionButtons">
+            <!-- Buttons injected based on user state (Join/Leave/Request Seat/Offer Ride) -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ==============================================================
+           MODAL 3: REQUEST SEAT MODAL
+           ============================================================== -->
+      <div class="modal-overlay" id="requestSeatModal">
+        <div class="bottom-sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-header-row">
+            <div>
+              <h3>Request a Seat</h3>
+              <p style="font-size:12px; color:var(--text-secondary);" id="requestModalSubtitle">Ask driver for an available seat</p>
+            </div>
+            <button class="sheet-close-btn" id="closeRequestModalBtn">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <form id="requestSeatForm" onsubmit="return false;">
+            <div class="intent-input-group" style="margin-bottom:10px;">
+              <span class="material-symbols-outlined">pin_drop</span>
+              <select id="requestPickupZoneSelect" required>
+                <!-- Populated with pickup zones -->
+              </select>
+            </div>
+
+            <div class="intent-input-group" style="margin-bottom:10px;">
+              <span class="material-symbols-outlined">notes</span>
+              <input type="text" id="requestMessageInput" placeholder="Add a note (e.g. 2 grocery bags, meeting at circle)" value="Howdy! I would love to share this ride!">
+            </div>
+
+            <button type="submit" class="btn-primary-intent" style="width:100%;">
+              Send Seat Request
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ==============================================================
+           MODAL 4: OFFER A RIDE (For Registered Drivers ONLY)
+           ============================================================== -->
+      <div class="modal-overlay" id="offerRideModal">
+        <div class="bottom-sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-header-row">
+            <div>
+              <h3>Offer Seats to Aggies</h3>
+              <p style="font-size:12px; color:var(--text-secondary);">Help fellow students reach their destination</p>
+            </div>
+            <button class="sheet-close-btn" id="closeOfferModalBtn">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <form id="offerRideForm" onsubmit="return false;">
+            <div class="intent-input-group" style="margin-bottom:10px;">
+              <span class="material-symbols-outlined">flag</span>
+              <input type="text" id="offerOriginInput" placeholder="Starting area (e.g., Northgate, The Barracks)" required>
+            </div>
+
+            <div class="intent-input-group" style="margin-bottom:10px;">
+              <span class="material-symbols-outlined">location_on</span>
+              <input type="text" id="offerDestinationInput" placeholder="Destination (e.g., Walmart, H-E-B, Target)" required>
+            </div>
+
+            <div class="intent-form-row" style="margin-bottom:10px;">
+              <div class="intent-input-group">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <input type="text" id="offerDateInput" value="Saturday, Nov 8" required>
+              </div>
+              <div class="intent-input-group">
+                <span class="material-symbols-outlined">schedule</span>
+                <input type="text" id="offerTimeInput" value="11:00 AM" required>
+              </div>
+            </div>
+
+            <div class="intent-form-row" style="margin-bottom:10px;">
+              <div class="intent-input-group">
+                <span class="material-symbols-outlined">airline_seat_recline_normal</span>
+                <select id="offerSeatsInput">
+                  <option value="1">1 Seat available</option>
+                  <option value="2">2 Seats available</option>
+                  <option value="3" selected>3 Seats available</option>
+                  <option value="4">4 Seats available</option>
+                </select>
+              </div>
+              <div class="intent-input-group">
+                <span class="material-symbols-outlined">attach_money</span>
+                <select id="offerContributionInput">
+                  <option value="0">Free ride for Aggies</option>
+                  <option value="2" selected>$2 fuel split</option>
+                  <option value="3">$3 fuel split</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="intent-input-group" style="margin-bottom:14px;">
+              <span class="material-symbols-outlined">edit_note</span>
+              <input type="text" id="offerNotesInput" placeholder="Notes (e.g. large trunk space, stopping at Park West)">
+            </div>
+
+            <button type="submit" class="btn-primary-intent" style="width:100%;">
+              Publish Ride to Community Group
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ==============================================================
+           MODAL 5: DRIVER REGISTRATION (Through Profile)
+           ============================================================== -->
+      <div class="modal-overlay" id="driverRegisterModal">
+        <div class="bottom-sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-header-row">
+            <div>
+              <h3>Register as an Aggie Driver</h3>
+              <p style="font-size:12px; color:var(--text-secondary);">Unlock driver capabilities and offer seats</p>
+            </div>
+            <button class="sheet-close-btn" id="closeDriverRegModalBtn">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <div style="font-size:11px; background:#EFF6FF; border:1px solid #BFDBFE; color:#1E40AF; padding:8px 10px; border-radius:8px; margin-bottom:12px;">
+            ⚠️ <strong>Makeathon Prototype Note:</strong> For this demonstration, verification is simulated as a <em>Demo Verified Driver</em>.
+          </div>
+
+          <form id="driverRegForm" onsubmit="return false;">
+            <div class="intent-form-row" style="margin-bottom:10px;">
+              <div class="intent-input-group">
+                <span class="material-symbols-outlined">badge</span>
+                <input type="text" id="regLicenceNum" placeholder="TX Driver Licence #" value="TX-18764092" required>
+              </div>
+              <div class="intent-input-group">
+                <span class="material-symbols-outlined">event</span>
+                <input type="text" id="regLicenceExp" placeholder="Expiry (YYYY-MM)" value="2028-10" required>
+              </div>
+            </div>
+
+            <div class="intent-form-row" style="margin-bottom:10px;">
+              <div class="intent-input-group">
+                <span class="material-symbols-outlined">directions_car</span>
+                <input type="text" id="regVehicleMake" placeholder="Make & Model" value="Toyota Corolla" required>
+              </div>
+              <div class="intent-input-group">
+                <span class="material-symbols-outlined">palette</span>
+                <input type="text" id="regVehicleColor" placeholder="Color & Year" value="Maroon (2023)" required>
+              </div>
+            </div>
+
+            <div class="intent-input-group" style="margin-bottom:14px;">
+              <span class="material-symbols-outlined">airline_seat_recline_normal</span>
+              <select id="regSeatsSelect">
+                <option value="2">2 Passenger Seats</option>
+                <option value="3" selected>3 Passenger Seats</option>
+                <option value="4">4 Passenger Seats</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn-primary-intent" style="width:100%;">
+              Complete Demo Registration
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ==============================================================
+           MODAL 6: SHARED PICKUP ZONES VISUALIZER (Section 5)
+           ============================================================== -->
+      <div class="modal-overlay" id="pickupMapModal">
+        <div class="bottom-sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-header-row">
+            <div>
+              <h3>Predefined Shared Pickup Zones</h3>
+              <p style="font-size:12px; color:var(--text-secondary);">Predefined meeting points around College Station</p>
+            </div>
+            <button class="sheet-close-btn" id="closePickupMapBtn">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <!-- Stylized College Station Map Preview Canvas -->
+          <div class="pickup-map-preview">
+            <svg viewBox="0 0 380 170" xmlns="http://www.w3.org/2000/svg">
+              <!-- Background Map Grids & Streets -->
+              <rect width="380" height="170" fill="#f4efe6"/>
+              <!-- Roads / Corridors -->
+              <path d="M 10 130 Q 150 120, 370 70" stroke="#ddd3c3" stroke-width="12" fill="none"/>
+              <path d="M 60 10 Q 120 90, 220 160" stroke="#ddd3c3" stroke-width="10" fill="none"/>
+              <path d="M 190 20 L 210 160" stroke="#e6decb" stroke-width="8" fill="none"/>
+              <path d="M 280 20 L 290 150" stroke="#e6decb" stroke-width="8" fill="none"/>
+
+              <!-- Central Campus MSC Marker -->
+              <circle cx="180" cy="85" r="14" fill="#500000" opacity="0.9"/>
+              <text x="180" y="89" fill="#fff" font-size="9" font-weight="bold" text-anchor="middle">MSC</text>
+
+              <!-- Park West Marker -->
+              <circle cx="80" cy="115" r="11" fill="#047857" opacity="0.9"/>
+              <text x="80" y="119" fill="#fff" font-size="8" font-weight="bold" text-anchor="middle">PW</text>
+
+              <!-- Northgate Marker -->
+              <circle cx="170" cy="35" r="10" fill="#3B82F6" opacity="0.9"/>
+              <text x="170" y="39" fill="#fff" font-size="8" font-weight="bold" text-anchor="middle">NG</text>
+
+              <!-- Century Square Marker -->
+              <circle cx="240" cy="35" r="10" fill="#D97706" opacity="0.9"/>
+              <text x="240" y="39" fill="#fff" font-size="8" font-weight="bold" text-anchor="middle">CS</text>
+
+              <!-- Connecting Corridor -->
+              <path d="M 80 115 Q 130 95, 180 85" stroke="#500000" stroke-width="2.5" stroke-dasharray="4" fill="none"/>
+            </svg>
+          </div>
+
+          <div id="pickupZonesDetailsList" style="display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto;">
+            <!-- Injected 7 shared pickup zones -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ==============================================================
+           MODAL 7: AGGIE TOUR FACTS MODAL
+           ============================================================== -->
+      <div class="modal-overlay" id="tourFactsModal">
+        <div class="bottom-sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-header-row">
+            <div>
+              <h3>Texas A&M Traditions & Heritage</h3>
+              <p style="font-size:12px; color:var(--text-secondary);">The community spirit behind AggieRide</p>
+            </div>
+            <button class="sheet-close-btn" id="closeTourFactsBtn">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <div id="tourFactsFullList" style="display:flex; flex-direction:column; gap:10px; max-height:300px; overflow-y:auto;">
+            <!-- Injected facts -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ==============================================================
+           MODAL 8: TAMU EMAIL OTP VERIFICATION MODAL (For Sarah Chen)
+           ============================================================== -->
+      <div class="modal-overlay" id="emailVerifyModal">
+        <div class="bottom-sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-header-row">
+            <div>
+              <h3>Verify Texas A&M Student Status</h3>
+              <p style="font-size:12px; color:var(--text-secondary);">Ensure community safety and trust</p>
+            </div>
+            <button class="sheet-close-btn" id="closeEmailVerifyBtn">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <p style="font-size:12.5px; color:var(--text-secondary); margin-bottom:12px;">
+            A one-time verification code was sent to <strong id="verifyEmailAddress">sarah.chen@tamu.edu</strong>.
+          </p>
+
+          <div class="intent-input-group" style="margin-bottom:14px;">
+            <span class="material-symbols-outlined">key</span>
+            <input type="text" id="verifyOtpInput" placeholder="Enter OTP code (Demo: 1876)" value="1876">
+          </div>
+
+          <button class="btn-primary-intent" id="submitVerifyOtpBtn" style="width:100%;">
+            Verify Student Account
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal 9: Choose Aggie Persona Modal -->
+      <div class="modal-overlay" id="personaSelectModal">
+        <div class="modal-card persona-select-modal-card">
+          <div class="modal-header">
+            <div class="modal-title-row">
+              <span class="material-symbols-outlined" style="color:var(--aggie-maroon); font-size:24px;">account_circle</span>
+              <div>
+                <h3 style="font-size:16px; margin:0;">Who are you experiencing AggieRide as?</h3>
+                <p style="font-size:12px; color:var(--text-secondary); margin:2px 0 0 0;">Select a student persona to explore their perspective</p>
+              </div>
+            </div>
+            <button class="modal-close-btn" id="closePersonaSelectBtn">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <div class="persona-choice-list" id="personaChoiceList">
+            <!-- Carlos -->
+            <div class="persona-choice-item" data-user="user-carlos">
+              <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=120&auto=format&fit=crop&q=80" class="persona-choice-avatar" alt="Carlos">
+              <div class="persona-choice-meta">
+                <div class="persona-choice-name">
+                  Carlos Hernandez '26
+                  <span class="persona-role-badge" style="background:#fce8e6; color:var(--aggie-maroon); font-size:10px;">Passenger</span>
+                </div>
+                <div class="persona-choice-desc">Sophomore at Park West. Expresses intent for Walmart and holds confirmed boarding pass.</div>
+              </div>
+            </div>
+
+            <!-- Maya -->
+            <div class="persona-choice-item" data-user="user-maya">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80" class="persona-choice-avatar" alt="Maya">
+              <div class="persona-choice-meta">
+                <div class="persona-choice-name">
+                  Maya Reed '25
+                  <span class="persona-role-badge" style="background:#ecfdf5; color:#047857; font-size:10px;">Verified Driver</span>
+                </div>
+                <div class="persona-choice-desc">Senior with 2022 Honda Civic. Sees demand alert banner and accepts passenger seat requests.</div>
+              </div>
+            </div>
+
+            <!-- Sarah -->
+            <div class="persona-choice-item" data-user="user-sarah">
+              <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80" class="persona-choice-avatar" alt="Sarah">
+              <div class="persona-choice-meta">
+                <div class="persona-choice-name">
+                  Sarah Chen '27
+                  <span class="persona-role-badge" style="background:#fffbeb; color:#b45309; font-size:10px;">Freshman</span>
+                </div>
+                <div class="persona-choice-desc">Hullabaloo Hall. Experiences the TAMU directory onboarding and email OTP verification flow.</div>
+              </div>
+            </div>
+
+            <!-- David -->
+            <div class="persona-choice-item" data-user="user-david">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" class="persona-choice-avatar" alt="David">
+              <div class="persona-choice-meta">
+                <div class="persona-choice-name">
+                  David Miller '24
+                  <span class="persona-role-badge" style="background:#ecfdf5; color:#047857; font-size:10px;">Grad Driver</span>
+                </div>
+                <div class="persona-choice-desc">Graduate driver with Silver RAV4. Carpools to Zachry Complex for TAMU Makeathon.</div>
+              </div>
+            </div>
+
+            <!-- Priya -->
+            <div class="persona-choice-item" data-user="user-priya">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" class="persona-choice-avatar" alt="Priya">
+              <div class="persona-choice-meta">
+                <div class="persona-choice-name">
+                  Priya Patel '25
+                  <span class="persona-role-badge" style="background:#f5f3ff; color:#6d28d9; font-size:10px;">Junior Driver</span>
+                </div>
+                <div class="persona-choice-desc">Junior with Maroon Elantra. Offers carpools to Kyle Field Game Day and Century Square.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- End phone-screen -->
+  </main>
+  </section><!-- End showcase-phone-column -->
+  </div><!-- End showcase-container -->
+
+  <!-- Application Core Scripts -->
+  <script src="js/seedData.js?v=3.0"></script>
+  <script src="js/app.js?v=3.0"></script>
+</body>
+</html>

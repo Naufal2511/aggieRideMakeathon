@@ -1,0 +1,46 @@
+rules_version = '2';
+
+// Cloud Storage Security Rules for AggieRide (Texas A&M Ride Sharing)
+// Optimized for Firebase Free Spark Plan (5 GB storage, 1 GB/day download)
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Helper: User is signed in with Firebase Auth
+    function isAuthenticated() {
+      return request.auth != null && request.auth.uid != null;
+    }
+
+    // Helper: User is uploading to their own storage folder
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Helper: Valid image file under 5 MB
+    function isValidImage() {
+      return request.resource.size < 5 * 1024 * 1024 &&
+             request.resource.contentType.matches('image/(jpeg|png|webp|gif)');
+    }
+
+    // Student Profile Avatars:
+    // Any authenticated student can view profile avatars.
+    // Only the profile owner can upload or delete their own avatar.
+    match /users/{userId}/avatar/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) && isValidImage();
+    }
+
+    // Driver Vehicle Photos:
+    // Any authenticated student can view car photos.
+    // Only the driver can upload photos of their vehicle.
+    match /users/{userId}/vehicles/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) && isValidImage();
+    }
+
+    // Default deny for all other paths
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
+

@@ -1,0 +1,426 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Application: AggieRide (Texas A&M Student Ride-Sharing Prototype)
+// Environment: Firebase Cloud Firestore (Optimized for Free Spark Plan)
+//
+// 1. Collection: users
+//    Document ID: {userId} (Must match request.auth.uid)
+//    Fields:
+//      - userId: string (required, 1-128 chars, immutable) - Firebase Auth UID
+//      - name: string (required, 1-100 chars) - Student display name
+//      - email: string (required, valid email, <= 150 chars, must be @tamu.edu if verified)
+//      - classYear: string (optional/nullable, <= 50 chars) - e.g. "'25 (Senior)"
+//      - major: string (optional/nullable, <= 100 chars) - e.g. "Computer Science"
+//      - isTamuVerified: bool (required) - TAMU student verification status
+//      - avatar: string (optional/nullable, <= 500 chars) - Profile picture URL
+//      - bio: string (optional/nullable, <= 1000 chars) - Student bio
+//      - carModel: string (optional/nullable, <= 100 chars) - Vehicle description (drivers)
+//      - ridesOffered: int (optional, >= 0) - Counter of rides published
+//      - ridesJoined: int (optional, >= 0) - Counter of rides booked
+//      - rating: number (optional, 0.0 - 5.0) - User reliability/rating score
+//      - reviewsCount: int (optional, >= 0) - Number of ratings received
+//      - onTimeRate: string | number (optional, <= 20 chars) - e.g. "100%"
+//      - joinedDate: timestamp | string (optional, <= 50 chars) - Member since date
+//      - fcmToken: string (optional/nullable, <= 500 chars) - Push notification token
+//
+// 2. Collection: rides
+//    Document ID: {rideId}
+//    Fields:
+//      - rideId: string (required, 1-100 chars, immutable) - Document identifier
+//      - driverId: string (required, 1-128 chars, immutable) - Auth UID of driver
+//      - origin: string (required, 1-200 chars) - Departure location
+//      - destination: string (required, 1-200 chars) - Arrival location
+//      - departureDate: timestamp | string (required, 1-100 chars) - Departure date
+//      - departureTime: string (required, 1-50 chars) - Departure time
+//      - availableSeats: int (required, 0-10) - Currently unfilled seats
+//      - totalSeats: int (required, 1-10) - Maximum passenger capacity
+//      - contribution: number (required, $0 - $100) - Suggested voluntary gas split
+//      - category: string (required, 1-50 chars) - e.g. "Shopping", "Campus", "Groceries"
+//      - isRecurring: bool (required) - Whether ride repeats weekly
+//      - recurringDays: list (required, <= 7 elements) - e.g. ["Mon", "Wed", "Fri"]
+//      - notes: string (optional/nullable, <= 1000 chars) - Driver comments or luggage notes
+//      - status: string (required, 'ACTIVE' | 'COMPLETED' | 'CANCELLED')
+//      - pickupSpot: string (required, 1-200 chars) - Specific meeting point
+//      - createdAt: timestamp | string (required, immutable) - Ride creation timestamp
+//      - passengers: list (required, <= 10 userIds) - Confirmed passenger UIDs
+//
+// 3. Collection: requests
+//    Document ID: {requestId}
+//    Fields:
+//      - requestId: string (required, 1-100 chars, immutable) - Document identifier
+//      - rideId: string (required, 1-100 chars, immutable) - Target ride identifier
+//      - passengerId: string (required, 1-128 chars, immutable) - Requesting student UID
+//      - driverId: string (required, 1-128 chars, immutable) - Driver student UID
+//      - seatsRequested: int (required, 1-10) - Requested seat count
+//      - status: string (required, 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'CANCELLED')
+//      - message: string (required, <= 500 chars) - Note to driver
+//      - requestedAt: timestamp | string (required, immutable) - Submission timestamp
+//      - updatedAt: timestamp | string (optional/nullable) - Last status change timestamp
+//
+// 4. Collection: notifications
+//    Document ID: {notificationId}
+//    Fields:
+//      - notificationId: string (required, 1-100 chars, immutable) - Identifier
+//      - userId: string (required, 1-128 chars, immutable) - Recipient user UID
+//      - title: string (required, 1-150 chars) - Notification headline
+//      - body: string (required, 1-500 chars) - Notification details
+//      - type: string (required, 1-50 chars) - Event type classification
+//      - rideId: string (optional/nullable, <= 100 chars) - Associated ride ID
+//      - isRead: bool (required) - Read status indicator
+//      - createdAt: timestamp | string (required, immutable) - Creation timestamp
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Global Helper Functions
+    // ===============================================================
+
+    // Check if the user is authenticated with Firebase Auth
+    function isAuthenticated() {
+      return request.auth != null && request.auth.uid != null;
+    }
+
+    // Check if authenticated user matches a given user ID
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Verify valid standard email format
+    function isValidEmail(email) {
+      return email is string &&
+             email.size() >= 3 &&
+             email.size() <= 150 &&
+             email.matches('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
+    }
+
+    // Verify Texas A&M University student email (@tamu.edu or subdomains like @email.tamu.edu)
+    function isTamuEmail(email) {
+      return email is string &&
+             email.size() <= 150 &&
+             email.matches('^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9.-]+\\.)?tamu\\.edu$');
+    }
+
+    // Validate date representation (supports both Firestore timestamp and ISO string formats)
+    function isValidDate(val) {
+      return val is timestamp || (val is string && val.size() >= 3 && val.size() <= 100);
+    }
+
+    // Check if caller is an authenticated TAMU student
+    // Evaluates JWT auth token first to consume zero Firestore read operations on Spark plan
+    function isTamuStudent() {
+      return isAuthenticated() && (
+        (request.auth.token.email != null && isTamuEmail(request.auth.token.email)) ||
+        (request.auth.token.email == null)
+      );
+    }
+
+    // Check if caller is verified as a TAMU driver
+    // Checks token email first (0 reads), then falls back to user document if token email absent
+    function isTamuVerifiedDriver() {
+      return isAuthenticated() && (
+        (request.auth.token.email != null && isTamuEmail(request.auth.token.email)) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isTamuVerified == true)
+      );
+    }
+
+    // ===============================================================
+    // Domain Validator: Users Collection
+    // ===============================================================
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['userId', 'name', 'email', 'isTamuVerified']) &&
+             data.keys().hasOnly([
+               'userId', 'name', 'email', 'classYear', 'major', 'isTamuVerified',
+               'avatar', 'bio', 'carModel', 'ridesOffered', 'ridesJoined',
+               'rating', 'reviewsCount', 'onTimeRate', 'joinedDate', 'fcmToken'
+             ]) &&
+             data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+             data.name is string && data.name.size() >= 1 && data.name.size() <= 100 &&
+             isValidEmail(data.email) &&
+             data.isTamuVerified is bool &&
+             // If verified, email MUST end with @tamu.edu
+             (!data.isTamuVerified || isTamuEmail(data.email)) &&
+             // Prevent email spoofing if token has an authenticated email
+             (request.auth.token.email == null || data.email == request.auth.token.email) &&
+             // Optional fields validation with strict size & type bounds
+             (!('classYear' in data) || data.classYear == null || (data.classYear is string && data.classYear.size() <= 50)) &&
+             (!('major' in data) || data.major == null || (data.major is string && data.major.size() <= 100)) &&
+             (!('avatar' in data) || data.avatar == null || (data.avatar is string && data.avatar.size() <= 500)) &&
+             (!('bio' in data) || data.bio == null || (data.bio is string && data.bio.size() <= 1000)) &&
+             (!('carModel' in data) || data.carModel == null || (data.carModel is string && data.carModel.size() <= 100)) &&
+             (!('ridesOffered' in data) || (data.ridesOffered is int && data.ridesOffered >= 0)) &&
+             (!('ridesJoined' in data) || (data.ridesJoined is int && data.ridesJoined >= 0)) &&
+             (!('rating' in data) || ((data.rating is int || data.rating is float) && data.rating >= 0 && data.rating <= 5.0)) &&
+             (!('reviewsCount' in data) || (data.reviewsCount is int && data.reviewsCount >= 0)) &&
+             (!('onTimeRate' in data) || data.onTimeRate == null || (data.onTimeRate is string && data.onTimeRate.size() <= 20) || ((data.onTimeRate is int || data.onTimeRate is float) && data.onTimeRate >= 0 && data.onTimeRate <= 100)) &&
+             (!('joinedDate' in data) || data.joinedDate == null || isValidDate(data.joinedDate)) &&
+             (!('fcmToken' in data) || data.fcmToken == null || (data.fcmToken is string && data.fcmToken.size() <= 500));
+    }
+
+    // ===============================================================
+    // Domain Validator: Rides Collection
+    // ===============================================================
+
+    function isValidRide(data) {
+      return data.keys().hasAll([
+               'rideId', 'driverId', 'origin', 'destination', 'departureDate',
+               'departureTime', 'availableSeats', 'totalSeats', 'contribution',
+               'category', 'isRecurring', 'recurringDays', 'status', 'pickupSpot',
+               'createdAt', 'passengers'
+             ]) &&
+             data.keys().hasOnly([
+               'rideId', 'driverId', 'origin', 'destination', 'departureDate',
+               'departureTime', 'availableSeats', 'totalSeats', 'contribution',
+               'category', 'isRecurring', 'recurringDays', 'notes', 'status',
+               'pickupSpot', 'createdAt', 'passengers'
+             ]) &&
+             data.rideId is string && data.rideId.size() >= 1 && data.rideId.size() <= 100 &&
+             data.driverId is string && data.driverId.size() >= 1 && data.driverId.size() <= 128 &&
+             data.origin is string && data.origin.size() >= 1 && data.origin.size() <= 200 &&
+             data.destination is string && data.destination.size() >= 1 && data.destination.size() <= 200 &&
+             isValidDate(data.departureDate) &&
+             data.departureTime is string && data.departureTime.size() >= 1 && data.departureTime.size() <= 50 &&
+             data.availableSeats is int && data.availableSeats >= 0 && data.availableSeats <= 10 &&
+             data.totalSeats is int && data.totalSeats >= 1 && data.totalSeats <= 10 &&
+             data.availableSeats <= data.totalSeats &&
+             (data.contribution is int || data.contribution is float) && data.contribution >= 0 && data.contribution <= 100 &&
+             data.category is string && data.category.size() >= 1 && data.category.size() <= 50 &&
+             data.isRecurring is bool &&
+             data.recurringDays is list && data.recurringDays.size() <= 7 &&
+             (!('notes' in data) || data.notes == null || (data.notes is string && data.notes.size() <= 1000)) &&
+             data.status in ['ACTIVE', 'COMPLETED', 'CANCELLED'] &&
+             data.pickupSpot is string && data.pickupSpot.size() >= 1 && data.pickupSpot.size() <= 200 &&
+             isValidDate(data.createdAt) &&
+             data.passengers is list && data.passengers.size() <= 10;
+    }
+
+    // ===============================================================
+    // Domain Validator: Requests Collection
+    // ===============================================================
+
+    function isValidRequest(data) {
+      return data.keys().hasAll([
+               'requestId', 'rideId', 'passengerId', 'driverId',
+               'seatsRequested', 'status', 'message', 'requestedAt'
+             ]) &&
+             data.keys().hasOnly([
+               'requestId', 'rideId', 'passengerId', 'driverId',
+               'seatsRequested', 'status', 'message', 'requestedAt', 'updatedAt'
+             ]) &&
+             data.requestId is string && data.requestId.size() >= 1 && data.requestId.size() <= 100 &&
+             data.rideId is string && data.rideId.size() >= 1 && data.rideId.size() <= 100 &&
+             data.passengerId is string && data.passengerId.size() >= 1 && data.passengerId.size() <= 128 &&
+             data.driverId is string && data.driverId.size() >= 1 && data.driverId.size() <= 128 &&
+             data.seatsRequested is int && data.seatsRequested >= 1 && data.seatsRequested <= 10 &&
+             data.status in ['PENDING', 'ACCEPTED', 'REJECTED', 'CANCELLED'] &&
+             data.message is string && data.message.size() <= 500 &&
+             isValidDate(data.requestedAt) &&
+             (!('updatedAt' in data) || data.updatedAt == null || isValidDate(data.updatedAt));
+    }
+
+    // ===============================================================
+    // Domain Validator: Notifications Collection
+    // ===============================================================
+
+    function isValidNotification(data) {
+      return data.keys().hasAll([
+               'notificationId', 'userId', 'title', 'body', 'type', 'isRead', 'createdAt'
+             ]) &&
+             data.keys().hasOnly([
+               'notificationId', 'userId', 'title', 'body', 'type', 'rideId', 'isRead', 'createdAt'
+             ]) &&
+             data.notificationId is string && data.notificationId.size() >= 1 && data.notificationId.size() <= 100 &&
+             data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+             data.title is string && data.title.size() >= 1 && data.title.size() <= 150 &&
+             data.body is string && data.body.size() >= 1 && data.body.size() <= 500 &&
+             data.type is string && data.type.size() >= 1 && data.type.size() <= 50 &&
+             (!('rideId' in data) || data.rideId == null || (data.rideId is string && data.rideId.size() <= 100)) &&
+             data.isRead is bool &&
+             isValidDate(data.createdAt);
+    }
+
+    // ===============================================================
+    // Rules: Users Collection
+    // ===============================================================
+
+    match /users/{userId} {
+      // Any authenticated TAMU student can read student profiles (directory for ride-sharing)
+      // Users can always read their own profile
+      allow read: if isAuthenticated() && (
+        isOwner(userId) ||
+        isTamuStudent()
+      );
+
+      // Users can only create their own profile document with their own UID
+      allow create: if isOwner(userId) &&
+        request.resource.data.userId == userId &&
+        isValidUser(request.resource.data);
+
+      // Users can only update their own profile document; userId is immutable
+      allow update: if isOwner(userId) &&
+        request.resource.data.userId == resource.data.userId &&
+        isValidUser(request.resource.data);
+
+      // Users can delete their own account
+      allow delete: if isOwner(userId);
+    }
+
+    // ===============================================================
+    // Rules: Rides Collection
+    // ===============================================================
+
+    match /rides/{rideId} {
+      // Authenticated users can read active or completed rides in the discovery feed.
+      // Drivers can always view their own rides (including CANCELLED).
+      // Booked passengers can also view their rides.
+      allow read: if isAuthenticated() && (
+        resource.data.status in ['ACTIVE', 'COMPLETED'] ||
+        resource.data.driverId == request.auth.uid ||
+        (resource.data.passengers is list && request.auth.uid in resource.data.passengers)
+      );
+
+      // Any authenticated TAMU verified student can offer a ride
+      allow create: if isAuthenticated() &&
+        request.auth.uid == request.resource.data.driverId &&
+        request.resource.data.rideId == rideId &&
+        request.resource.data.status == 'ACTIVE' &&
+        isTamuVerifiedDriver() &&
+        isValidRide(request.resource.data);
+
+      // Updates are strictly scoped to either:
+      // 1. The Driver updating their own ride details (status, seats, notes, etc.)
+      // 2. An accepted passenger booking decrementing availableSeats by 1
+      allow update: if isAuthenticated() && (
+        // Case 1: Driver updating their own ride
+        (
+          request.auth.uid == resource.data.driverId &&
+          request.resource.data.driverId == resource.data.driverId &&
+          request.resource.data.rideId == resource.data.rideId &&
+          request.resource.data.createdAt == resource.data.createdAt &&
+          isValidRide(request.resource.data)
+        ) ||
+        // Case 2: Passenger booking decrements availableSeats
+        (
+          request.auth.uid != resource.data.driverId &&
+          (
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly(['availableSeats']) ||
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly(['availableSeats', 'passengers'])
+          ) &&
+          request.resource.data.availableSeats == resource.data.availableSeats - 1 &&
+          request.resource.data.availableSeats >= 0 &&
+          request.resource.data.rideId == resource.data.rideId &&
+          request.resource.data.driverId == resource.data.driverId &&
+          request.resource.data.totalSeats == resource.data.totalSeats &&
+          request.resource.data.origin == resource.data.origin &&
+          request.resource.data.destination == resource.data.destination &&
+          request.resource.data.status == resource.data.status &&
+          request.resource.data.createdAt == resource.data.createdAt &&
+          isValidRide(request.resource.data)
+        )
+      );
+
+      // Only the driver can delete a ride
+      allow delete: if isAuthenticated() && resource.data.driverId == request.auth.uid;
+    }
+
+    // ===============================================================
+    // Rules: Requests Collection
+    // ===============================================================
+
+    match /requests/{requestId} {
+      // Read access is restricted to the requesting passenger and the designated driver
+      allow read: if isAuthenticated() && (
+        request.auth.uid == resource.data.passengerId ||
+        request.auth.uid == resource.data.driverId
+      );
+
+      // Passenger creates request with initial status 'PENDING'
+      allow create: if isAuthenticated() &&
+        request.auth.uid == request.resource.data.passengerId &&
+        request.resource.data.passengerId != request.resource.data.driverId &&
+        request.resource.data.requestId == requestId &&
+        request.resource.data.status == 'PENDING' &&
+        isValidRequest(request.resource.data);
+
+      // Status updates with role separation and immutable core fields
+      allow update: if isAuthenticated() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt']) &&
+        request.resource.data.requestId == resource.data.requestId &&
+        request.resource.data.rideId == resource.data.rideId &&
+        request.resource.data.passengerId == resource.data.passengerId &&
+        request.resource.data.driverId == resource.data.driverId &&
+        request.resource.data.seatsRequested == resource.data.seatsRequested &&
+        request.resource.data.requestedAt == resource.data.requestedAt &&
+        (
+          // Driver can accept or reject a PENDING request
+          (
+            request.auth.uid == resource.data.driverId &&
+            resource.data.status == 'PENDING' &&
+            request.resource.data.status in ['ACCEPTED', 'REJECTED']
+          ) ||
+          // Passenger can cancel their own PENDING or ACCEPTED request
+          (
+            request.auth.uid == resource.data.passengerId &&
+            resource.data.status in ['PENDING', 'ACCEPTED'] &&
+            request.resource.data.status == 'CANCELLED'
+          )
+        ) &&
+        isValidRequest(request.resource.data);
+
+      // Passengers can delete their pending or cancelled requests
+      allow delete: if isAuthenticated() &&
+        request.auth.uid == resource.data.passengerId &&
+        resource.data.status in ['PENDING', 'CANCELLED'];
+    }
+
+    // ===============================================================
+    // Rules: Notifications Collection
+    // ===============================================================
+
+    match /notifications/{notificationId} {
+      // Notifications are private: only the recipient user can read
+      allow read: if isAuthenticated() &&
+        request.auth.uid == resource.data.userId;
+
+      // Authenticated users can create notifications for counterparties (e.g. driver/passenger alerts)
+      // Must start with isRead == false
+      allow create: if isAuthenticated() &&
+        request.resource.data.notificationId == notificationId &&
+        request.resource.data.isRead == false &&
+        isValidNotification(request.resource.data);
+
+      // Recipients can mark notifications as read; all other fields are immutable
+      allow update: if isAuthenticated() &&
+        request.auth.uid == resource.data.userId &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isRead']) &&
+        request.resource.data.notificationId == resource.data.notificationId &&
+        request.resource.data.userId == resource.data.userId &&
+        request.resource.data.title == resource.data.title &&
+        request.resource.data.body == resource.data.body &&
+        request.resource.data.type == resource.data.type &&
+        request.resource.data.createdAt == resource.data.createdAt &&
+        isValidNotification(request.resource.data);
+
+      // Recipients can delete their own notifications
+      allow delete: if isAuthenticated() &&
+        request.auth.uid == resource.data.userId;
+    }
+
+    // ===============================================================
+    // Default Deny Root
+    // ===============================================================
+
+    // Deny all reads and writes to unspecified collections or subcollections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

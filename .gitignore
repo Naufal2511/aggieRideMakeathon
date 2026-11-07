@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Deployment & Logs
+.vercel
+.netlify
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Flutter / Dart
+aggie_ride/build/
+aggie_ride/.dart_tool/
+aggie_ride/.flutter-plugins
+aggie_ride/.flutter-plugins-dependencies
+aggie_ride/ios/Pods/
+aggie_ride/ios/.symlinks/
+aggie_ride/ios/Flutter/Flutter.framework
+aggie_ride/ios/Flutter/Flutter.podspec
+aggie_ride/android/.gradle/
+aggie_ride/android/local.properties
+
+# IDEs
+.idea/
+.vscode/
+*.iml
